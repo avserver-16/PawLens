@@ -1,14 +1,147 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { User, Stethoscope } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const Auth = () => {
-  const [role, setRole] = useState<"owner" | "vet">("owner");
+  const [role, setRole] = useState<"pet_owner" | "veterinarian">("pet_owner");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+  const { toast } = useToast();
+
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        const { data: userRole } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .single();
+        
+        if (userRole?.role === 'pet_owner') {
+          navigate('/pet-owner');
+        } else if (userRole?.role === 'veterinarian') {
+          navigate('/veterinarian');
+        }
+      }
+    };
+    checkUser();
+  }, [navigate]);
+
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        const { data: userRole } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.user.id)
+          .single();
+
+        if (userRole?.role === 'pet_owner') {
+          navigate('/pet-owner');
+        } else if (userRole?.role === 'veterinarian') {
+          navigate('/veterinarian');
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const fullName = formData.get('fullName') as string;
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+        },
+      });
+
+      if (error) throw error;
+
+      if (data.user) {
+        // Insert user role
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({ user_id: data.user.id, role });
+
+        if (roleError) throw roleError;
+
+        // Insert profile
+        const { error: profileError } = await supabase
+          .from('profiles')
+          .insert({ user_id: data.user.id, full_name: fullName });
+
+        if (profileError) throw profileError;
+
+        // If veterinarian, create vet profile
+        if (role === 'veterinarian') {
+          const { error: vetError } = await supabase
+            .from('veterinarian_profiles')
+            .insert({ user_id: data.user.id });
+
+          if (vetError) throw vetError;
+        }
+
+        toast({
+          title: "Success!",
+          description: "Account created successfully. Please check your email to verify your account.",
+        });
+
+        // Redirect based on role
+        if (role === 'pet_owner') {
+          navigate('/pet-owner');
+        } else {
+          navigate('/veterinarian');
+        }
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center p-4">
@@ -75,22 +208,26 @@ const Auth = () => {
             </TabsList>
 
             <TabsContent value="signin" className="space-y-6">
-              <div className="space-y-4">
+              <form onSubmit={handleSignIn} className="space-y-4">
                 <div>
                   <Label htmlFor="signin-email">Email</Label>
                   <Input 
-                    id="signin-email" 
+                    id="signin-email"
+                    name="email"
                     type="email" 
                     placeholder="you@example.com"
                     className="mt-1.5"
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="signin-password">Password</Label>
                   <Input 
-                    id="signin-password" 
+                    id="signin-password"
+                    name="password"
                     type="password"
                     className="mt-1.5"
+                    required
                   />
                 </div>
                 <div className="flex items-center justify-between text-sm">
@@ -102,47 +239,49 @@ const Auth = () => {
                     Forgot password?
                   </a>
                 </div>
-              </div>
-              <Button className="w-full" size="lg">
-                Sign In
-              </Button>
+                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                  {loading ? "Signing In..." : "Sign In"}
+                </Button>
+              </form>
             </TabsContent>
 
             <TabsContent value="signup" className="space-y-6">
-              <div className="space-y-4">
+              <form onSubmit={handleSignUp} className="space-y-4">
                 <div>
                   <Label className="mb-3 block">I am a:</Label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
-                      onClick={() => setRole("owner")}
+                      type="button"
+                      onClick={() => setRole("pet_owner")}
                       className={`p-4 rounded-lg border-2 transition-all ${
-                        role === "owner"
+                        role === "pet_owner"
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
                       }`}
                     >
                       <User className={`w-6 h-6 mx-auto mb-2 ${
-                        role === "owner" ? "text-primary" : "text-muted-foreground"
+                        role === "pet_owner" ? "text-primary" : "text-muted-foreground"
                       }`} />
                       <div className={`font-medium ${
-                        role === "owner" ? "text-primary" : "text-foreground"
+                        role === "pet_owner" ? "text-primary" : "text-foreground"
                       }`}>
                         Pet Owner
                       </div>
                     </button>
                     <button
-                      onClick={() => setRole("vet")}
+                      type="button"
+                      onClick={() => setRole("veterinarian")}
                       className={`p-4 rounded-lg border-2 transition-all ${
-                        role === "vet"
+                        role === "veterinarian"
                           ? "border-primary bg-primary/5"
                           : "border-border hover:border-primary/50"
                       }`}
                     >
                       <Stethoscope className={`w-6 h-6 mx-auto mb-2 ${
-                        role === "vet" ? "text-primary" : "text-muted-foreground"
+                        role === "veterinarian" ? "text-primary" : "text-muted-foreground"
                       }`} />
                       <div className={`font-medium ${
-                        role === "vet" ? "text-primary" : "text-foreground"
+                        role === "veterinarian" ? "text-primary" : "text-foreground"
                       }`}>
                         Veterinarian
                       </div>
@@ -153,26 +292,33 @@ const Auth = () => {
                 <div>
                   <Label htmlFor="signup-name">Full Name</Label>
                   <Input 
-                    id="signup-name" 
+                    id="signup-name"
+                    name="fullName"
                     placeholder="John Doe"
                     className="mt-1.5"
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="signup-email">Email</Label>
                   <Input 
-                    id="signup-email" 
+                    id="signup-email"
+                    name="email"
                     type="email" 
                     placeholder="you@example.com"
                     className="mt-1.5"
+                    required
                   />
                 </div>
                 <div>
                   <Label htmlFor="signup-password">Password</Label>
                   <Input 
-                    id="signup-password" 
+                    id="signup-password"
+                    name="password"
                     type="password"
                     className="mt-1.5"
+                    required
+                    minLength={6}
                   />
                 </div>
                 <div className="text-sm text-muted-foreground">
@@ -185,10 +331,10 @@ const Auth = () => {
                     Privacy Policy
                   </a>
                 </div>
-              </div>
-              <Button className="w-full" size="lg">
-                Create Account
-              </Button>
+                <Button type="submit" className="w-full" size="lg" disabled={loading}>
+                  {loading ? "Creating Account..." : "Create Account"}
+                </Button>
+              </form>
             </TabsContent>
           </Tabs>
 
