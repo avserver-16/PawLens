@@ -14,16 +14,206 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      diagnoses: {
+        Row: {
+          ai_diagnosis: string | null
+          assigned_vet_id: string | null
+          consultation_reason: string | null
+          created_at: string | null
+          cure_suggestions: string | null
+          disease_name: string | null
+          home_remedies: string | null
+          id: string
+          image_url: string | null
+          owner_id: string
+          pet_id: string
+          problem_description: string
+          severity: string | null
+          should_consult_doctor: boolean | null
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          ai_diagnosis?: string | null
+          assigned_vet_id?: string | null
+          consultation_reason?: string | null
+          created_at?: string | null
+          cure_suggestions?: string | null
+          disease_name?: string | null
+          home_remedies?: string | null
+          id?: string
+          image_url?: string | null
+          owner_id: string
+          pet_id: string
+          problem_description: string
+          severity?: string | null
+          should_consult_doctor?: boolean | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          ai_diagnosis?: string | null
+          assigned_vet_id?: string | null
+          consultation_reason?: string | null
+          created_at?: string | null
+          cure_suggestions?: string | null
+          disease_name?: string | null
+          home_remedies?: string | null
+          id?: string
+          image_url?: string | null
+          owner_id?: string
+          pet_id?: string
+          problem_description?: string
+          severity?: string | null
+          should_consult_doctor?: boolean | null
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "diagnoses_pet_id_fkey"
+            columns: ["pet_id"]
+            isOneToOne: false
+            referencedRelation: "pet_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pet_profiles: {
+        Row: {
+          age: number | null
+          breed: string | null
+          created_at: string | null
+          id: string
+          medical_history: string | null
+          name: string
+          owner_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          age?: number | null
+          breed?: string | null
+          created_at?: string | null
+          id?: string
+          medical_history?: string | null
+          name: string
+          owner_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          age?: number | null
+          breed?: string | null
+          created_at?: string | null
+          id?: string
+          medical_history?: string | null
+          name?: string
+          owner_id?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          full_name: string | null
+          id: string
+          location: string | null
+          phone: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          location?: string | null
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      veterinarian_profiles: {
+        Row: {
+          clinic_address: string | null
+          clinic_name: string | null
+          created_at: string | null
+          id: string
+          rating: number | null
+          specialization: string | null
+          updated_at: string | null
+          user_id: string
+          years_experience: number | null
+        }
+        Insert: {
+          clinic_address?: string | null
+          clinic_name?: string | null
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          specialization?: string | null
+          updated_at?: string | null
+          user_id: string
+          years_experience?: number | null
+        }
+        Update: {
+          clinic_address?: string | null
+          clinic_name?: string | null
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          specialization?: string | null
+          updated_at?: string | null
+          user_id?: string
+          years_experience?: number | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "pet_owner" | "veterinarian"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +340,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["pet_owner", "veterinarian"],
+    },
   },
 } as const
