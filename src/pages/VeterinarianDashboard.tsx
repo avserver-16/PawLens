@@ -1,10 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useToast } from "@/hooks/use-toast";
 import { LogOut, User, MapPin, Calendar } from "lucide-react";
 
 interface Diagnosis {
@@ -19,7 +17,8 @@ interface Diagnosis {
   home_remedies: string;
   status: string;
   created_at: string;
-  owner_id: string;
+  owner_name: string;
+  owner_location: string;
   pet_profiles: {
     name: string;
     breed: string;
@@ -27,73 +26,55 @@ interface Diagnosis {
   };
 }
 
+// Mock data for demonstration
+const mockDiagnoses: Diagnosis[] = [
+  {
+    id: "1",
+    problem_description: "My dog has red patches on his belly that seem to be itching a lot.",
+    image_url: "https://images.unsplash.com/photo-1583337130417-3346a1be7dee",
+    disease_name: "Atopic Dermatitis",
+    severity: "moderate",
+    should_consult_doctor: true,
+    consultation_reason: "The condition shows signs of inflammation that may require professional treatment and possible allergy testing.",
+    cure_suggestions: "Prescribed antihistamines and topical corticosteroids. Consider hypoallergenic diet.",
+    home_remedies: "Regular oatmeal baths, keep environment clean, use hypoallergenic bedding.",
+    status: "pending",
+    created_at: new Date().toISOString(),
+    owner_name: "Sarah Johnson",
+    owner_location: "San Francisco, CA",
+    pet_profiles: {
+      name: "Max",
+      breed: "Golden Retriever",
+      age: 4,
+    },
+  },
+  {
+    id: "2",
+    problem_description: "Small dry patches appeared on my cat's back near the tail.",
+    image_url: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba",
+    disease_name: "Flea Allergy Dermatitis",
+    severity: "mild",
+    should_consult_doctor: false,
+    consultation_reason: "Mild case that can be managed with proper flea control.",
+    cure_suggestions: "Apply topical flea treatment monthly. Monitor for improvement.",
+    home_remedies: "Regular grooming, wash bedding frequently, vacuum carpets.",
+    status: "reviewed",
+    created_at: new Date(Date.now() - 86400000).toISOString(),
+    owner_name: "Michael Chen",
+    owner_location: "Austin, TX",
+    pet_profiles: {
+      name: "Luna",
+      breed: "Domestic Shorthair",
+      age: 2,
+    },
+  },
+];
+
 const VeterinarianDashboard = () => {
-  const [user, setUser] = useState<any>(null);
-  const [diagnoses, setDiagnoses] = useState<Diagnosis[]>([]);
-  const [ownerProfiles, setOwnerProfiles] = useState<Record<string, any>>({});
-  const [loading, setLoading] = useState(true);
+  const [diagnoses] = useState<Diagnosis[]>(mockDiagnoses);
   const navigate = useNavigate();
-  const { toast } = useToast();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
-      setUser(session.user);
-      fetchDiagnoses();
-    };
-    getUser();
-  }, [navigate]);
-
-  const fetchDiagnoses = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('diagnoses')
-        .select(`
-          *,
-          pet_profiles (
-            name,
-            breed,
-            age
-          )
-        `)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setDiagnoses(data || []);
-
-      // Fetch owner profiles separately
-      if (data) {
-        const ownerIds = [...new Set(data.map(d => d.owner_id))];
-        const { data: profilesData } = await supabase
-          .from('profiles')
-          .select('user_id, full_name, location')
-          .in('user_id', ownerIds);
-        
-        if (profilesData) {
-          const profilesMap = profilesData.reduce((acc: any, profile) => {
-            acc[profile.user_id] = profile;
-            return acc;
-          }, {});
-          setOwnerProfiles(profilesMap);
-        }
-      }
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
+  const handleSignOut = () => {
     navigate('/');
   };
 
@@ -123,7 +104,7 @@ const VeterinarianDashboard = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm">
               <User className="w-4 h-4" />
-              <span className="text-muted-foreground">{user?.email}</span>
+              <span className="text-muted-foreground">vet@example.com</span>
             </div>
             <Button variant="outline" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
@@ -143,11 +124,7 @@ const VeterinarianDashboard = () => {
             </p>
           </div>
 
-          {loading ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground">Loading cases...</p>
-            </div>
-          ) : diagnoses.length === 0 ? (
+          {diagnoses.length === 0 ? (
             <Card className="p-12 text-center">
               <h3 className="text-xl font-semibold text-foreground mb-2">No Cases Yet</h3>
               <p className="text-muted-foreground">
@@ -184,17 +161,15 @@ const VeterinarianDashboard = () => {
                         </Badge>
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-4 text-sm">
+                        <div className="grid md:grid-cols-2 gap-4 text-sm">
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <User className="w-4 h-4" />
-                          <span>Owner: {ownerProfiles[diagnosis.owner_id]?.full_name || 'Unknown'}</span>
+                          <span>Owner: {diagnosis.owner_name}</span>
                         </div>
-                        {ownerProfiles[diagnosis.owner_id]?.location && (
-                          <div className="flex items-center gap-2 text-muted-foreground">
-                            <MapPin className="w-4 h-4" />
-                            <span>{ownerProfiles[diagnosis.owner_id].location}</span>
-                          </div>
-                        )}
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <MapPin className="w-4 h-4" />
+                          <span>{diagnosis.owner_location}</span>
+                        </div>
                         <div className="flex items-center gap-2 text-muted-foreground">
                           <Calendar className="w-4 h-4" />
                           <span>{new Date(diagnosis.created_at).toLocaleDateString()}</span>

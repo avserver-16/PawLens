@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -10,7 +9,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Upload, LogOut, User } from "lucide-react";
 
 const PetOwnerDashboard = () => {
-  const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
@@ -18,20 +16,7 @@ const PetOwnerDashboard = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const getUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        navigate('/auth');
-        return;
-      }
-      setUser(session.user);
-    };
-    getUser();
-  }, [navigate]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
+  const handleSignOut = () => {
     navigate('/');
   };
 
@@ -49,86 +34,35 @@ const PetOwnerDashboard = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!user || !selectedImage) return;
+    if (!selectedImage) {
+      toast({
+        title: "Error",
+        description: "Please upload an image",
+        variant: "destructive",
+      });
+      return;
+    }
 
     setLoading(true);
-    const formData = new FormData(e.currentTarget);
 
-    try {
-      // Upload image to storage
-      const fileExt = selectedImage.name.split('.').pop();
-      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
-      const { error: uploadError, data: uploadData } = await supabase.storage
-        .from('pet-images')
-        .upload(fileName, selectedImage);
-
-      if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('pet-images')
-        .getPublicUrl(fileName);
-
-      // Create pet profile if needed
-      const petName = formData.get('petName') as string;
-      const breed = formData.get('breed') as string;
-      const age = formData.get('age') as string;
-      const medicalHistory = formData.get('medicalHistory') as string;
-
-      const { data: petData, error: petError } = await supabase
-        .from('pet_profiles')
-        .insert({
-          owner_id: user.id,
-          name: petName,
-          breed,
-          age: parseInt(age),
-          medical_history: medicalHistory
-        })
-        .select()
-        .single();
-
-      if (petError) throw petError;
-
-      // Create diagnosis entry
-      const problemDescription = formData.get('problemDescription') as string;
-      const { data: diagnosisData, error: diagnosisError } = await supabase
-        .from('diagnoses')
-        .insert({
-          pet_id: petData.id,
-          owner_id: user.id,
-          problem_description: problemDescription,
-          image_url: publicUrl,
-          status: 'analyzing'
-        })
-        .select()
-        .single();
-
-      if (diagnosisError) throw diagnosisError;
-
-      // Call AI analysis edge function
-      const { data: aiResult, error: aiError } = await supabase.functions.invoke('analyze-skin-condition', {
-        body: {
-          diagnosisId: diagnosisData.id,
-          imageUrl: publicUrl,
-          problemDescription
-        }
+    // Simulate AI analysis with mock data
+    setTimeout(() => {
+      setDiagnosis({
+        disease_name: "Atopic Dermatitis",
+        severity: "moderate",
+        should_consult_doctor: true,
+        consultation_reason: "The condition shows signs of inflammation that may require professional treatment and possible allergy testing.",
+        cure_suggestions: "Prescribed antihistamines and topical corticosteroids. Consider hypoallergenic diet and regular monitoring.",
+        home_remedies: "Regular oatmeal baths to soothe the skin. Keep environment clean and use hypoallergenic bedding. Avoid harsh soaps and chemicals."
       });
 
-      if (aiError) throw aiError;
-
-      setDiagnosis(aiResult);
       toast({
         title: "Analysis Complete!",
         description: "AI diagnosis has been generated for your pet.",
       });
-    } catch (error: any) {
-      toast({
-        title: "Error",
-        description: error.message,
-        variant: "destructive",
-      });
-    } finally {
+
       setLoading(false);
-    }
+    }, 2000);
   };
 
   return (
@@ -143,7 +77,7 @@ const PetOwnerDashboard = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-2 text-sm">
               <User className="w-4 h-4" />
-              <span className="text-muted-foreground">{user?.email}</span>
+              <span className="text-muted-foreground">pet.owner@example.com</span>
             </div>
             <Button variant="outline" size="sm" onClick={handleSignOut}>
               <LogOut className="w-4 h-4 mr-2" />
