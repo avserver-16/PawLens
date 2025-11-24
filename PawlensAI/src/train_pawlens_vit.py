@@ -34,7 +34,7 @@ print("Classes:", train_ds.classes)
 model = ViTForImageClassification.from_pretrained(
     "google/vit-base-patch16-224-in21k",
     num_labels=num_classes,
-    ignore_mismatched_sizes=True   # <<<<<< THIS FIXES THE ERROR
+    ignore_mismatched_sizes=True   
 )
 
 
