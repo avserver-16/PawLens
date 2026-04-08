@@ -1,9 +1,0 @@
-torch
-torchvision
-timm
-transformers
-albumentations
-scikit-learn
-pillow
-tqdm
-matplotlib

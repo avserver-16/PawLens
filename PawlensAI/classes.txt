@@ -1,7 +1,0 @@
-normal
-fungal_infection
-mange
-allergy
-bacterial_infection
-yeast_infection
-parasites
