@@ -51,78 +51,78 @@ export default function ScanPage() {
   const resetForm = () => { setFile(null); setPreview(null); setPetName(''); setNotes(''); setResult(null); setError(''); };
 
   const sevColors = {
-    Low: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-    Medium: 'bg-amber-50 text-amber-700 border-amber-200',
-    High: 'bg-orange-50 text-orange-700 border-orange-200',
-    Critical: 'bg-red-50 text-red-700 border-red-200',
+    Low: { bg: '#ecfdf5', color: '#047857', border: '#a7f3d0' },
+    Medium: { bg: '#fffbeb', color: '#b45309', border: '#fcd34d' },
+    High: { bg: '#fff7ed', color: '#c2410c', border: '#fed7aa' },
+    Critical: { bg: '#fef2f2', color: '#dc2626', border: '#fecaca' },
   };
 
   if (result) {
-    const sevClass = sevColors[result.severity] || sevColors.Medium;
+    const sev = sevColors[result.severity] || sevColors.Medium;
     return (
-      <div className="max-w-4xl mx-auto animate-fade-in-up">
-        <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center mx-auto mb-3">
-            <CheckCircle2 className="w-7 h-7 text-emerald-600" />
+      <div className="animate-fade-in-up" style={{ maxWidth: '900px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px auto' }}>
+            <CheckCircle2 style={{ width: '28px', height: '28px', color: '#059669' }} />
           </div>
-          <h2 className="text-xl font-bold text-slate-900">Analysis Complete</h2>
-          <p className="text-sm text-slate-500 mt-1">Here are the results</p>
+          <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#0f172a' }}>Analysis Complete</h2>
+          <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>Here are the results</p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="card overflow-hidden">
-            <img src={result.imageUrl} alt="Scanned" className="w-full h-56 object-cover" />
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '20px' }}>
+          <div className="card" style={{ overflow: 'hidden' }}>
+            <img src={result.imageUrl} alt="Scanned" style={{ width: '100%', height: '220px', objectFit: 'cover' }} />
             {result.petName && (
-              <div className="p-4 border-t border-slate-100">
-                <p className="text-xs text-slate-400">Pet Name</p>
-                <p className="text-sm font-semibold text-slate-700">{result.petName}</p>
+              <div style={{ padding: '16px', borderTop: '1px solid #f1f5f9' }}>
+                <p style={{ fontSize: '11px', color: '#94a3b8' }}>Pet Name</p>
+                <p style={{ fontSize: '13px', fontWeight: 600, color: '#334155', marginTop: '2px' }}>{result.petName}</p>
               </div>
             )}
           </div>
 
-          <div className="lg:col-span-2 space-y-4">
-            <div className="card p-5">
-              <div className="flex flex-wrap items-start justify-between gap-3 mb-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div className="card" style={{ padding: '20px' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px', marginBottom: '12px' }}>
                 <div>
-                  <p className="text-xs text-slate-400">Diagnosis</p>
-                  <h3 className="text-xl font-bold text-slate-900 mt-0.5">{result.diseaseName}</h3>
+                  <p style={{ fontSize: '11px', color: '#94a3b8' }}>Diagnosis</p>
+                  <h3 style={{ fontSize: '20px', fontWeight: 700, color: '#0f172a', marginTop: '2px' }}>{result.diseaseName}</h3>
                 </div>
-                <div className="flex gap-2">
-                  <span className={`px-3 py-1 rounded-lg text-xs font-semibold border ${sevClass}`}>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <span style={{ padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: sev.bg, color: sev.color, border: `1px solid ${sev.border}` }}>
                     {result.severity}
                   </span>
-                  <span className="px-3 py-1 rounded-lg text-xs font-semibold bg-primary-50 text-primary-700 border border-primary-200">
+                  <span style={{ padding: '4px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 600, background: '#eef2ff', color: '#4338ca', border: '1px solid #c7d2fe' }}>
                     {result.confidence}% Match
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-slate-600 leading-relaxed">{result.description}</p>
+              <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.7 }}>{result.description}</p>
             </div>
 
-            <div className="card p-5">
-              <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-500" /> Symptoms
+            <div className="card" style={{ padding: '20px' }}>
+              <h4 style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <AlertTriangle style={{ width: '16px', height: '16px', color: '#d97706' }} /> Symptoms
               </h4>
-              <div className="flex flex-wrap gap-2">
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {result.symptoms.map((s, i) => (
-                  <span key={i} className="px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 text-xs font-medium text-slate-600">{s}</span>
+                  <span key={i} style={{ padding: '4px 12px', borderRadius: '8px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '12px', fontWeight: 500, color: '#475569' }}>{s}</span>
                 ))}
               </div>
             </div>
 
-            <div className="card p-5">
-              <h4 className="text-sm font-semibold text-slate-800 mb-3 flex items-center gap-2">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Treatment
+            <div className="card" style={{ padding: '20px' }}>
+              <h4 style={{ fontSize: '13px', fontWeight: 600, color: '#1e293b', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <CheckCircle2 style={{ width: '16px', height: '16px', color: '#059669' }} /> Treatment
               </h4>
-              <p className="text-sm text-slate-600 leading-relaxed">{result.treatment}</p>
+              <p style={{ fontSize: '13px', color: '#475569', lineHeight: 1.7 }}>{result.treatment}</p>
             </div>
 
-            <div className="flex gap-3">
-              <button onClick={resetForm} className="btn-primary text-sm px-5 py-2.5 flex items-center gap-1.5">
-                <Upload className="w-4 h-4" /> New Scan
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <button onClick={resetForm} className="btn-primary" style={{ fontSize: '13px', padding: '10px 20px', gap: '6px' }}>
+                <Upload style={{ width: '16px', height: '16px' }} /> New Scan
               </button>
-              <button onClick={() => navigate('/dashboard/history')} className="btn-secondary text-sm px-5 py-2.5 flex items-center gap-1.5">
-                View History <ArrowRight className="w-4 h-4" />
+              <button onClick={() => navigate('/dashboard/history')} className="btn-secondary" style={{ fontSize: '13px', padding: '10px 20px', gap: '6px' }}>
+                View History <ArrowRight style={{ width: '16px', height: '16px' }} />
               </button>
             </div>
           </div>
@@ -132,84 +132,95 @@ export default function ScanPage() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto animate-fade-in-up">
-      <div className="text-center mb-8">
-        <h2 className="text-xl font-bold text-slate-900">New Skin Scan</h2>
-        <p className="text-sm text-slate-500 mt-1">Upload a photo for AI-powered analysis</p>
+    <div className="animate-fade-in-up" style={{ maxWidth: '680px' }}>
+      <div style={{ marginBottom: '28px' }}>
+        <h2 style={{ fontSize: '20px', fontWeight: 700, color: '#0f172a', margin: 0 }}>New Skin Scan</h2>
+        <p style={{ fontSize: '13px', color: '#64748b', marginTop: '4px' }}>Upload a photo for AI-powered analysis</p>
       </div>
 
-      <div className="space-y-5">
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {error && (
-          <div className="p-3 rounded-xl bg-red-50 border border-red-100 text-red-600 text-sm animate-fade-in">{error}</div>
+          <div style={{ padding: '12px', borderRadius: '12px', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', fontSize: '13px' }} className="animate-fade-in">{error}</div>
         )}
 
         <div
-          className={`relative border-2 border-dashed rounded-2xl transition-all ${
-            dragOver ? 'border-primary-400 bg-primary-50/50' : preview ? 'border-slate-200 bg-white' : 'border-slate-200 hover:border-primary-300 hover:bg-slate-50/50'
-          }`}
+          style={{
+            border: `2px dashed ${dragOver ? '#818cf8' : preview ? '#e2e8f0' : '#e2e8f0'}`,
+            borderRadius: '16px',
+            transition: 'all 0.2s',
+            background: dragOver ? '#eef2ff' : preview ? '#fff' : '#fff',
+            cursor: preview ? 'default' : 'pointer',
+          }}
           onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
         >
           {preview ? (
-            <div className="relative">
-              <img src={preview} alt="Preview" className="w-full h-64 sm:h-72 object-contain rounded-2xl p-2" />
-              <button onClick={resetForm} className="absolute top-3 right-3 w-7 h-7 rounded-full bg-white shadow-md flex items-center justify-center text-slate-400 hover:text-slate-600 transition-all">
-                <X className="w-3.5 h-3.5" />
+            <div style={{ position: 'relative' }}>
+              <img src={preview} alt="Preview" style={{ width: '100%', height: '280px', objectFit: 'contain', borderRadius: '16px', padding: '8px' }} />
+              <button onClick={resetForm} style={{ position: 'absolute', top: '12px', right: '12px', width: '28px', height: '28px', borderRadius: '50%', background: '#fff', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}>
+                <X style={{ width: '14px', height: '14px', color: '#64748b' }} />
               </button>
-              <div className="absolute bottom-3 left-3 px-2.5 py-1 rounded-lg bg-white shadow-sm text-[11px] text-slate-500 flex items-center gap-1.5 border border-slate-100">
-                <FileImage className="w-3 h-3" /> {file?.name}
+              <div style={{ position: 'absolute', bottom: '12px', left: '12px', padding: '4px 10px', borderRadius: '8px', background: '#fff', border: '1px solid #f1f5f9', fontSize: '11px', color: '#64748b', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 1px 4px rgba(0,0,0,0.05)' }}>
+                <FileImage style={{ width: '12px', height: '12px' }} /> {file?.name}
               </div>
             </div>
           ) : (
-            <div className="p-12 sm:p-16 text-center cursor-pointer" onClick={() => fileInputRef.current?.click()}>
-              <div className="w-14 h-14 rounded-2xl bg-primary-50 flex items-center justify-center mx-auto mb-4">
-                <Camera className="w-7 h-7 text-primary-500" />
+            <div style={{ padding: '48px 24px', textAlign: 'center' }} onClick={() => fileInputRef.current?.click()}>
+              <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: '#eef2ff', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto' }}>
+                <Camera style={{ width: '28px', height: '28px', color: '#6366f1' }} />
               </div>
-              <p className="text-base font-semibold text-slate-700 mb-1">Drop image here</p>
-              <p className="text-sm text-slate-400 mb-3">or click to browse</p>
-              <p className="text-xs text-slate-300">JPEG, PNG, WebP · Max 10MB</p>
+              <p style={{ fontSize: '15px', fontWeight: 600, color: '#334155', marginBottom: '4px' }}>Drop image here</p>
+              <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '12px' }}>or click to browse</p>
+              <p style={{ fontSize: '12px', color: '#cbd5e1' }}>JPEG, PNG, WebP · Max 10MB</p>
             </div>
           )}
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => handleFileSelect(e.target.files[0])} className="hidden" />
+          <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => handleFileSelect(e.target.files[0])} style={{ display: 'none' }} />
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Pet Name <span className="text-slate-300">(optional)</span></label>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>
+              Pet Name <span style={{ color: '#cbd5e1' }}>(optional)</span>
+            </label>
             <input type="text" value={petName} onChange={(e) => setPetName(e.target.value)}
               className="input-field" placeholder="e.g., Buddy" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">Notes <span className="text-slate-300">(optional)</span></label>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>
+              Notes <span style={{ color: '#cbd5e1' }}>(optional)</span>
+            </label>
             <input type="text" value={notes} onChange={(e) => setNotes(e.target.value)}
               className="input-field" placeholder="Additional observations..." />
           </div>
         </div>
 
         <button onClick={handleSubmit} disabled={!file || loading}
-          className="w-full btn-primary py-3.5 text-sm flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none">
+          className="btn-primary"
+          style={{ width: '100%', padding: '14px', fontSize: '14px', gap: '8px', opacity: (!file || loading) ? 0.4 : 1, cursor: (!file || loading) ? 'not-allowed' : 'pointer' }}>
           {loading ? (
-            <><Loader2 className="w-4 h-4 animate-spin" /> Analyzing...</>
+            <><Loader2 style={{ width: '16px', height: '16px', animation: 'spin 1s linear infinite' }} /> Analyzing...</>
           ) : (
-            <><Upload className="w-4 h-4" /> Analyze Image</>
+            <><Upload style={{ width: '16px', height: '16px' }} /> Analyze Image</>
           )}
         </button>
 
-        <div className="card-flat p-5">
-          <h4 className="text-sm font-semibold text-slate-700 mb-3 flex items-center gap-2">
-            <Info className="w-4 h-4 text-primary-500" /> Tips for Best Results
+        <div className="card-flat" style={{ padding: '20px' }}>
+          <h4 style={{ fontSize: '13px', fontWeight: 600, color: '#334155', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Info style={{ width: '16px', height: '16px', color: '#6366f1' }} /> Tips for Best Results
           </h4>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
             {['Good natural lighting', 'Focus on affected area', 'Clear, sharp image', 'Multiple angles help'].map(tip => (
-              <div key={tip} className="flex items-center gap-2 text-xs text-slate-500">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary-400 flex-shrink-0" />
+              <div key={tip} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#64748b' }}>
+                <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#818cf8', flexShrink: 0 }} />
                 {tip}
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
 }

@@ -7,10 +7,10 @@ import {
 } from 'lucide-react';
 
 const severityConfig = {
-  Low: { color: 'text-emerald-600', bg: 'bg-emerald-50', border: 'border-emerald-100', dot: 'bg-emerald-500' },
-  Medium: { color: 'text-amber-600', bg: 'bg-amber-50', border: 'border-amber-100', dot: 'bg-amber-500' },
-  High: { color: 'text-orange-600', bg: 'bg-orange-50', border: 'border-orange-100', dot: 'bg-orange-500' },
-  Critical: { color: 'text-red-600', bg: 'bg-red-50', border: 'border-red-100', dot: 'bg-red-500' },
+  Low: { color: '#059669', bg: '#ecfdf5', border: '#d1fae5', dot: '#10b981' },
+  Medium: { color: '#d97706', bg: '#fffbeb', border: '#fef3c7', dot: '#f59e0b' },
+  High: { color: '#ea580c', bg: '#fff7ed', border: '#fed7aa', dot: '#f97316' },
+  Critical: { color: '#dc2626', bg: '#fef2f2', border: '#fecaca', dot: '#ef4444' },
 };
 
 export default function OverviewPage() {
@@ -32,8 +32,8 @@ export default function OverviewPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="w-7 h-7 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '256px' }}>
+        <div style={{ width: '28px', height: '28px', border: '2px solid #c7d2fe', borderTop: '2px solid #4f46e5', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
       </div>
     );
   }
@@ -44,126 +44,130 @@ export default function OverviewPage() {
   const recentScans = stats?.recentScans || [];
 
   const statCards = [
-    { label: 'Total Scans', value: totalScans, icon: Activity, iconBg: 'bg-primary-50', iconColor: 'text-primary-600' },
-    { label: 'Conditions Detected', value: diseaseDistribution.length, icon: TrendingUp, iconBg: 'bg-emerald-50', iconColor: 'text-emerald-600' },
-    { label: 'Healthy Results', value: diseaseDistribution.find(d => d._id === 'Healthy')?.count || 0, icon: Shield, iconBg: 'bg-amber-50', iconColor: 'text-amber-600' },
-    { label: 'High Severity', value: severityDistribution.filter(s => s._id === 'High' || s._id === 'Critical').reduce((a, c) => a + c.count, 0), icon: AlertTriangle, iconBg: 'bg-red-50', iconColor: 'text-red-600' },
+    { label: 'Total Scans', value: totalScans, icon: Activity, iconBg: '#eef2ff', iconColor: '#4f46e5' },
+    { label: 'Conditions Detected', value: diseaseDistribution.length, icon: TrendingUp, iconBg: '#ecfdf5', iconColor: '#059669' },
+    { label: 'Healthy Results', value: diseaseDistribution.find(d => d._id === 'Healthy')?.count || 0, icon: Shield, iconBg: '#fffbeb', iconColor: '#d97706' },
+    { label: 'High Severity', value: severityDistribution.filter(s => s._id === 'High' || s._id === 'Critical').reduce((a, c) => a + c.count, 0), icon: AlertTriangle, iconBg: '#fef2f2', iconColor: '#dc2626' },
   ];
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
+    <div className="animate-fade-in-up" style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px' }}>
         {statCards.map((s, i) => (
-          <div key={i} className="card p-5">
-            <div className="flex items-center justify-between mb-3">
-              <div className={`w-10 h-10 rounded-xl ${s.iconBg} flex items-center justify-center`}>
-                <s.icon className={`w-5 h-5 ${s.iconColor}`} />
+          <div key={i} className="card" style={{ padding: '20px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+              <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: s.iconBg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <s.icon style={{ width: '20px', height: '20px', color: s.iconColor }} />
               </div>
             </div>
-            <p className="text-2xl font-bold text-slate-800">{s.value}</p>
-            <p className="text-xs font-medium text-slate-400 mt-1">{s.label}</p>
+            <p style={{ fontSize: '24px', fontWeight: 700, color: '#1e293b' }}>{s.value}</p>
+            <p style={{ fontSize: '12px', fontWeight: 500, color: '#94a3b8', marginTop: '4px' }}>{s.label}</p>
           </div>
         ))}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '24px' }}>
         {/* Disease distribution */}
-        <div className="lg:col-span-2 card p-6">
-          <h3 className="text-sm font-semibold text-slate-800 mb-5">Disease Distribution</h3>
+        <div className="card" style={{ padding: '24px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#1e293b', marginBottom: '20px' }}>Disease Distribution</h3>
           {diseaseDistribution.length > 0 ? (
-            <div className="space-y-4">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {diseaseDistribution.map((d) => {
                 const pct = totalScans > 0 ? Math.round((d.count / totalScans) * 100) : 0;
                 return (
                   <div key={d._id}>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <span className="text-sm font-medium text-slate-700">{d._id}</span>
-                      <span className="text-xs text-slate-400">{d.count} · {pct}%</span>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+                      <span style={{ fontSize: '13px', fontWeight: 500, color: '#334155' }}>{d._id}</span>
+                      <span style={{ fontSize: '12px', color: '#94a3b8' }}>{d.count} · {pct}%</span>
                     </div>
-                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-gradient-to-r from-primary-500 to-primary-400 transition-all duration-700" style={{ width: `${pct}%` }} />
+                    <div style={{ height: '8px', background: '#f1f5f9', borderRadius: '100px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', borderRadius: '100px', background: 'linear-gradient(to right, #6366f1, #818cf8)', transition: 'width 0.7s ease', width: `${pct}%` }} />
                     </div>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <div className="text-center py-12">
-              <Upload className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-              <p className="text-sm text-slate-500 mb-4">No scans yet</p>
-              <Link to="/dashboard/scan" className="btn-primary text-xs px-5 py-2 inline-flex items-center gap-1.5">
-                <Upload className="w-3.5 h-3.5" /> Start First Scan
+            <div style={{ textAlign: 'center', padding: '48px 0' }}>
+              <Upload style={{ width: '40px', height: '40px', color: '#cbd5e1', margin: '0 auto 12px auto' }} />
+              <p style={{ fontSize: '14px', color: '#64748b', marginBottom: '16px' }}>No scans yet</p>
+              <Link to="/dashboard/scan" className="btn-primary" style={{ fontSize: '12px', padding: '8px 20px', gap: '6px' }}>
+                <Upload style={{ width: '14px', height: '14px' }} /> Start First Scan
               </Link>
             </div>
           )}
         </div>
 
         {/* Severity */}
-        <div className="card p-6">
-          <h3 className="text-sm font-semibold text-slate-800 mb-5">Severity Overview</h3>
+        <div className="card" style={{ padding: '24px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#1e293b', marginBottom: '20px' }}>Severity Overview</h3>
           {severityDistribution.length > 0 ? (
-            <div className="space-y-2.5">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               {['Low', 'Medium', 'High', 'Critical'].map((sev) => {
                 const item = severityDistribution.find(s => s._id === sev);
                 const count = item?.count || 0;
                 const config = severityConfig[sev];
                 return (
-                  <div key={sev} className={`flex items-center justify-between p-3 rounded-xl ${config.bg} border ${config.border}`}>
-                    <div className="flex items-center gap-2.5">
-                      <span className={`w-2 h-2 rounded-full ${config.dot}`} />
-                      <span className={`text-sm font-medium ${config.color}`}>{sev}</span>
+                  <div key={sev} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px', borderRadius: '12px', background: config.bg, border: `1px solid ${config.border}` }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: config.dot }} />
+                      <span style={{ fontSize: '13px', fontWeight: 500, color: config.color }}>{sev}</span>
                     </div>
-                    <span className={`text-sm font-bold ${config.color}`}>{count}</span>
+                    <span style={{ fontSize: '13px', fontWeight: 700, color: config.color }}>{count}</span>
                   </div>
                 );
               })}
             </div>
           ) : (
-            <p className="text-sm text-slate-400 text-center py-8">No data yet</p>
+            <p style={{ fontSize: '14px', color: '#94a3b8', textAlign: 'center', padding: '32px 0' }}>No data yet</p>
           )}
         </div>
       </div>
 
       {/* Recent scans */}
-      <div className="card p-6">
-        <div className="flex items-center justify-between mb-5">
-          <h3 className="text-sm font-semibold text-slate-800">Recent Scans</h3>
+      <div className="card" style={{ padding: '24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+          <h3 style={{ fontSize: '14px', fontWeight: 600, color: '#1e293b' }}>Recent Scans</h3>
           {recentScans.length > 0 && (
-            <Link to="/dashboard/history" className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1">
-              View All <ChevronRight className="w-3.5 h-3.5" />
+            <Link to="/dashboard/history" style={{ fontSize: '12px', fontWeight: 600, color: '#4f46e5', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '4px' }}>
+              View All <ChevronRight style={{ width: '14px', height: '14px' }} />
             </Link>
           )}
         </div>
         {recentScans.length > 0 ? (
-          <div className="space-y-2">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {recentScans.map((scan) => {
               const config = severityConfig[scan.severity] || severityConfig.Medium;
               return (
                 <Link key={scan._id} to={`/dashboard/diagnosis/${scan._id}`}
-                  className="flex items-center gap-4 p-3 rounded-xl hover:bg-slate-50 transition-all group">
-                  <img src={scan.imageUrl} alt="Scan" className="w-12 h-12 rounded-xl object-cover border border-slate-200" />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-slate-700">{scan.diseaseName}</p>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${config.bg} ${config.color}`}>
+                  style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '12px', borderRadius: '12px', textDecoration: 'none', transition: 'background 0.15s' }}
+                  onMouseEnter={e => e.currentTarget.style.background = '#f8fafc'}
+                  onMouseLeave={e => e.currentTarget.style.background = 'transparent'}>
+                  <img src={scan.imageUrl} alt="Scan" style={{ width: '48px', height: '48px', borderRadius: '12px', objectFit: 'cover', border: '1px solid #e2e8f0' }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: '13px', fontWeight: 500, color: '#334155', margin: 0 }}>{scan.diseaseName}</p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
+                      <span style={{ fontSize: '11px', padding: '2px 8px', borderRadius: '100px', fontWeight: 500, background: config.bg, color: config.color }}>
                         {scan.severity}
                       </span>
-                      <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                        <Calendar className="w-3 h-3" />
+                      <span style={{ fontSize: '11px', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Calendar style={{ width: '12px', height: '12px' }} />
                         {new Date(scan.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-slate-500 transition-colors" />
+                  <ChevronRight style={{ width: '16px', height: '16px', color: '#cbd5e1' }} />
                 </Link>
               );
             })}
           </div>
         ) : (
-          <p className="text-sm text-slate-400 text-center py-8">No scans yet. Upload your first image to get started.</p>
+          <p style={{ fontSize: '14px', color: '#94a3b8', textAlign: 'center', padding: '32px 0' }}>No scans yet. Upload your first image to get started.</p>
         )}
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
 }
