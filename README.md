@@ -12,7 +12,7 @@
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 - [Features](#-features)
 - [Disease Classes](#-disease-classes)
@@ -33,7 +33,7 @@
 
 ---
 
-## ✨ Features
+##  Features
 
 | Feature | Description |
 |---|---|
@@ -50,7 +50,7 @@
 
 ---
 
-## 🦠 Disease Classes
+##  Disease Classes
 
 The model classifies canine skin conditions into **6 categories**:
 
@@ -65,7 +65,7 @@ The model classifies canine skin conditions into **6 categories**:
 
 ---
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 ### Frontend
 - **React 19** with React Router v7
@@ -158,7 +158,7 @@ PawLens/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -227,7 +227,7 @@ The app will be available at:
 
 ---
 
-## 🧠 AI Model
+##  AI Model
 
 ### Architecture
 
@@ -258,7 +258,7 @@ The dataset was curated using [Roboflow](https://universe.roboflow.com/errol-iyl
 
 ---
 
-## 📡 API Endpoints
+##  API Endpoints
 
 ### Authentication
 
@@ -287,7 +287,7 @@ The dataset was curated using [Roboflow](https://universe.roboflow.com/errol-iyl
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 ### Landing Page
 The landing page features a hero section, feature highlights, a 4-step process overview, and a call-to-action.
