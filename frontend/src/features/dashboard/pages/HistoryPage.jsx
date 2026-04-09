@@ -121,7 +121,7 @@ export default function HistoryPage() {
               {Array.from({ length: pagination.pages }, (_, i) => i + 1).map(p => (
                 <button key={p} onClick={() => loadDiagnoses(p)}
                   style={{
-                    width: '36px', height: '36px', borderRadius: '8px', fontSize: '13px', fontWeight: 500, border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+                    width: '36px', height: '36px', borderRadius: '8px', fontSize: '13px', fontWeight: 500, cursor: 'pointer', transition: 'all 0.15s',
                     background: p === pagination.page ? '#4f46e5' : '#fff',
                     color: p === pagination.page ? '#fff' : '#475569',
                     border: p === pagination.page ? 'none' : '1px solid #e2e8f0',
