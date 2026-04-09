@@ -6,8 +6,8 @@ export default function GuestRoute({ children }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-surface-950 flex items-center justify-center">
-        <div className="w-10 h-10 border-2 border-primary-500/30 border-t-primary-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
       </div>
     );
   }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../../../context/AuthContext';
-import { Dog, Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({ email: '', password: '' });
@@ -31,102 +31,95 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-surface-950 flex items-center justify-center p-4 relative overflow-hidden">
-      {/* Background effects */}
-      <div className="absolute top-1/4 -left-32 w-96 h-96 bg-primary-600/15 rounded-full blur-[128px]" />
-      <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-accent-600/15 rounded-full blur-[128px]" />
+    <div style={{ minHeight: '100vh', display: 'flex', fontFamily: "'Inter', system-ui, sans-serif" }}>
+      {/* Left panel */}
+      <div className="hidden lg:flex" style={{ width: '50%', background: 'linear-gradient(135deg, #4f46e5, #3730a3)', position: 'relative', overflow: 'hidden', flexDirection: 'column', justifyContent: 'center', padding: '64px' }}>
+        <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', bottom: '-80px', left: '-80px', width: '300px', height: '300px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', filter: 'blur(60px)' }} />
 
-      <div className="w-full max-w-md relative z-10 animate-slide-up">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <Link to="/" className="inline-flex items-center gap-2 group">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
-              <Dog className="w-7 h-7 text-white" />
+        <div style={{ position: 'relative', zIndex: 1 }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginBottom: '48px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg style={{ width: '24px', height: '24px', color: '#fff' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="10" r="3" />
+                <circle cx="7" cy="6" r="1.5" fill="currentColor" />
+                <circle cx="17" cy="6" r="1.5" fill="currentColor" />
+                <path d="M12 13c-4 0-7 2-7 5a2 2 0 002 2h10a2 2 0 002-2c0-3-3-5-7-5z" />
+              </svg>
             </div>
-            <span className="text-3xl font-bold bg-gradient-to-r from-white to-surface-200 bg-clip-text text-transparent">
-              PawLens
-            </span>
+            <span style={{ fontSize: '24px', fontWeight: 700, color: '#fff' }}>PawLens</span>
           </Link>
-          <p className="text-surface-200 mt-3 text-sm">Welcome back. Sign in to continue.</p>
-        </div>
 
-        {/* Form card */}
-        <div className="p-8 rounded-2xl glass">
-          <form onSubmit={handleSubmit} className="space-y-5">
-            {error && (
-              <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-sm text-center animate-fade-in">
-                {error}
+          <h2 style={{ fontSize: '28px', fontWeight: 700, color: '#fff', lineHeight: 1.3, marginBottom: '16px' }}>AI-Powered Skin<br />Disease Detection</h2>
+          <p style={{ fontSize: '15px', color: '#c7d2fe', lineHeight: 1.7, maxWidth: '360px' }}>
+            Upload a photo of your dog's skin condition and get an instant diagnosis with treatment recommendations.
+          </p>
+
+          <div style={{ marginTop: '36px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+            {['Instant AI analysis', 'Detailed treatment guidance', 'Track health history'].map(t => (
+              <div key={t} style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '14px', color: '#e0e7ff' }}>
+                <div style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(255,255,255,0.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                  <svg style={{ width: '12px', height: '12px', color: '#fff' }} viewBox="0 0 20 20" fill="currentColor"><path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" /></svg>
+                </div>
+                {t}
               </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Right form */}
+      <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '48px 24px', background: '#f8fafc' }}>
+        <div style={{ width: '100%', maxWidth: '400px' }} className="animate-fade-in-up">
+          <Link to="/" className="lg:hidden" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginBottom: '32px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(99,102,241,0.2)' }}>
+              <svg style={{ width: '20px', height: '20px', color: '#fff' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="10" r="3" /><path d="M12 13c-4 0-7 2-7 5a2 2 0 002 2h10a2 2 0 002-2c0-3-3-5-7-5z" /></svg>
+            </div>
+            <span style={{ fontSize: '20px', fontWeight: 700, color: '#1e293b' }}>PawLens</span>
+          </Link>
+
+          <div style={{ marginBottom: '32px' }}>
+            <h1 style={{ fontSize: '24px', fontWeight: 700, color: '#0f172a', marginBottom: '8px' }}>Welcome back</h1>
+            <p style={{ fontSize: '14px', color: '#64748b' }}>Sign in to your account to continue.</p>
+          </div>
+
+          <form onSubmit={handleSubmit}>
+            {error && (
+              <div style={{ padding: '12px 16px', borderRadius: '12px', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', fontSize: '13px', marginBottom: '20px' }} className="animate-fade-in">{error}</div>
             )}
 
-            {/* Email */}
-            <div>
-              <label className="block text-sm font-medium text-surface-200 mb-2">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-200/50" />
-                <input
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-11 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-surface-200/30 focus:outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/25 transition-all text-sm"
-                  placeholder="you@example.com"
-                />
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>Email Address</label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input type="email" name="email" value={formData.email} onChange={handleChange} required className="input-field" style={{ paddingLeft: '40px' }} placeholder="you@example.com" />
               </div>
             </div>
 
-            {/* Password */}
-            <div>
-              <label className="block text-sm font-medium text-surface-200 mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-200/50" />
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  required
-                  className="w-full pl-11 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-white placeholder:text-surface-200/30 focus:outline-none focus:border-primary-500/50 focus:ring-1 focus:ring-primary-500/25 transition-all text-sm"
-                  placeholder="••••••••"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-surface-200/50 hover:text-surface-200 transition-colors"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            <div style={{ marginBottom: '24px' }}>
+              <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>Password</label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={16} style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)', color: '#94a3b8' }} />
+                <input type={showPassword ? 'text' : 'password'} name="password" value={formData.password} onChange={handleChange} required className="input-field" style={{ paddingLeft: '40px', paddingRight: '40px' }} placeholder="••••••••" />
+                <button type="button" onClick={() => setShowPassword(!showPassword)} style={{ position: 'absolute', right: '14px', top: '50%', transform: 'translateY(-50%)', background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer', padding: 0 }}>
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3.5 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  Sign In
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
+            <button type="submit" disabled={loading} className="btn-primary" style={{ width: '100%', padding: '14px', fontSize: '14px', gap: '8px', opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
+              {loading ? <div style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff', borderRadius: '50%', animation: 'spin 1s linear infinite' }} /> : <>Sign In <ArrowRight size={16} /></>}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <p className="text-surface-200 text-sm">
-              Don't have an account?{' '}
-              <Link to="/register" className="text-primary-400 hover:text-primary-300 font-medium transition-colors">
-                Create one
-              </Link>
-            </p>
-          </div>
+          <p style={{ marginTop: '24px', textAlign: 'center', fontSize: '14px', color: '#64748b' }}>
+            Don't have an account?{' '}
+            <Link to="/register" style={{ color: '#4f46e5', fontWeight: 600, textDecoration: 'none' }}>Create one</Link>
+          </p>
         </div>
       </div>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
     </div>
   );
 }

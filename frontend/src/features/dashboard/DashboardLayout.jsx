@@ -1,10 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate, useLocation, Outlet } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
-import {
-  Dog, LayoutDashboard, Upload, History, BarChart3,
-  LogOut, Menu, X, ChevronRight, User
-} from 'lucide-react';
+import { LayoutDashboard, Upload, History, LogOut, Menu, X, ChevronRight } from 'lucide-react';
 
 const navItems = [
   { label: 'Overview', icon: LayoutDashboard, path: '/dashboard' },
@@ -18,114 +15,87 @@ export default function DashboardLayout() {
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/');
-  };
-
-  const isActive = (path) => {
-    if (path === '/dashboard') return location.pathname === '/dashboard';
-    return location.pathname.startsWith(path);
-  };
+  const handleLogout = async () => { await logout(); navigate('/'); };
+  const isActive = (path) => path === '/dashboard' ? location.pathname === '/dashboard' : location.pathname.startsWith(path);
 
   return (
-    <div className="min-h-screen bg-surface-950 text-white flex">
+    <div style={{ minHeight: '100vh', display: 'flex', background: '#f8fafc', fontFamily: "'Inter', system-ui, sans-serif" }}>
       {/* Mobile overlay */}
       {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden animate-fade-in"
-          onClick={() => setSidebarOpen(false)}
-        />
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.2)', zIndex: 40 }} className="lg:hidden animate-fade-in" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed lg:sticky top-0 left-0 h-screen w-72 bg-surface-900/80 backdrop-blur-xl border-r border-white/5 z-50 transition-transform duration-300 flex flex-col ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        {/* Logo */}
-        <div className="p-6 flex items-center justify-between border-b border-white/5">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/20">
-              <Dog className="w-6 h-6 text-white" />
+      <aside className={sidebarOpen ? '' : 'hidden lg:flex'} style={{ position: 'fixed', top: 0, left: 0, height: '100vh', width: '260px', background: '#fff', borderRight: '1px solid #e2e8f0', zIndex: 50, display: 'flex', flexDirection: 'column' }}>
+        <div style={{ padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(99,102,241,0.15)' }}>
+              <svg style={{ width: '20px', height: '20px', color: '#fff' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="10" r="3" /><circle cx="7" cy="6" r="1.5" fill="currentColor" /><circle cx="17" cy="6" r="1.5" fill="currentColor" />
+                <path d="M12 13c-4 0-7 2-7 5a2 2 0 002 2h10a2 2 0 002-2c0-3-3-5-7-5z" />
+              </svg>
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-white to-surface-200 bg-clip-text text-transparent">
-              PawLens
-            </span>
+            <span style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b' }}>PawLens</span>
           </Link>
-          <button onClick={() => setSidebarOpen(false)} className="lg:hidden text-surface-200 hover:text-white">
-            <X className="w-5 h-5" />
+          <button onClick={() => setSidebarOpen(false)} className="lg:hidden" style={{ background: 'none', border: 'none', color: '#94a3b8', cursor: 'pointer' }}>
+            <X size={20} />
           </button>
         </div>
 
-        {/* Nav */}
-        <nav className="flex-1 p-4 space-y-1">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={() => setSidebarOpen(false)}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-all duration-200 group ${
-                isActive(item.path)
-                  ? 'bg-gradient-to-r from-primary-600/20 to-accent-600/20 text-white border border-primary-500/20'
-                  : 'text-surface-200 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <item.icon className={`w-5 h-5 ${isActive(item.path) ? 'text-primary-400' : 'text-surface-200/60 group-hover:text-surface-200'}`} />
-              {item.label}
-              {isActive(item.path) && <ChevronRight className="w-4 h-4 ml-auto text-primary-400/50" />}
-            </Link>
-          ))}
+        <nav style={{ flex: 1, padding: '8px 12px' }}>
+          {navItems.map((item) => {
+            const active = isActive(item.path);
+            return (
+              <Link key={item.path} to={item.path} onClick={() => setSidebarOpen(false)} style={{
+                display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '12px', fontSize: '13px', fontWeight: 500, textDecoration: 'none', marginBottom: '2px', transition: 'all 0.15s',
+                background: active ? '#eef2ff' : 'transparent', color: active ? '#4338ca' : '#64748b',
+              }}>
+                <item.icon size={18} style={{ color: active ? '#4f46e5' : '#94a3b8' }} />
+                {item.label}
+                {active && <ChevronRight size={14} style={{ marginLeft: 'auto', color: '#818cf8' }} />}
+              </Link>
+            );
+          })}
         </nav>
 
-        {/* User section */}
-        <div className="p-4 border-t border-white/5">
-          <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 mb-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center font-bold text-sm">
+        <div style={{ padding: '12px', borderTop: '1px solid #f1f5f9' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', borderRadius: '12px', background: '#f8fafc', marginBottom: '8px' }}>
+            <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'linear-gradient(135deg, #818cf8, #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '12px', fontWeight: 700, flexShrink: 0 }}>
               {user?.username?.[0]?.toUpperCase() || 'U'}
             </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{user?.username}</p>
-              <p className="text-xs text-surface-200/60 truncate">{user?.email}</p>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ fontSize: '13px', fontWeight: 500, color: '#334155', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{user?.username}</p>
+              <p style={{ fontSize: '11px', color: '#94a3b8', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', margin: 0 }}>{user?.email}</p>
             </div>
           </div>
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-medium text-surface-200 hover:text-rose-400 hover:bg-rose-500/10 transition-all duration-200"
+          <button onClick={handleLogout} style={{
+            display: 'flex', alignItems: 'center', gap: '12px', width: '100%', padding: '10px 14px', borderRadius: '12px', fontSize: '13px', fontWeight: 500, color: '#64748b', background: 'none', border: 'none', cursor: 'pointer', transition: 'all 0.15s',
+          }}
+            onMouseEnter={(e) => { e.target.style.background = '#fef2f2'; e.target.style.color = '#dc2626'; }}
+            onMouseLeave={(e) => { e.target.style.background = 'none'; e.target.style.color = '#64748b'; }}
           >
-            <LogOut className="w-5 h-5" />
-            Sign Out
+            <LogOut size={18} /> Sign Out
           </button>
         </div>
       </aside>
 
-      {/* Main content */}
-      <main className="flex-1 min-h-screen">
-        {/* Top bar */}
-        <header className="sticky top-0 z-30 h-16 flex items-center justify-between px-4 lg:px-8 border-b border-white/5 bg-surface-950/80 backdrop-blur-xl">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="lg:hidden text-surface-200 hover:text-white p-2 -ml-2"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
-
-          <div className="hidden lg:block">
-            <h2 className="text-lg font-semibold">
+      {/* Main */}
+      <main style={{ flex: 1, marginLeft: '260px', minHeight: '100vh', display: 'flex', flexDirection: 'column' }} className="max-lg:!ml-0">
+        <header style={{ position: 'sticky', top: 0, zIndex: 30, height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 32px', background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid #f1f5f9' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <button onClick={() => setSidebarOpen(true)} className="lg:hidden" style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer', padding: '6px', marginLeft: '-6px' }}>
+              <Menu size={20} />
+            </button>
+            <h2 style={{ fontSize: '16px', fontWeight: 600, color: '#1e293b', margin: 0 }}>
               {navItems.find(n => isActive(n.path))?.label || 'Dashboard'}
             </h2>
           </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              to="/dashboard/scan"
-              className="px-4 py-2 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl text-sm font-medium hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 flex items-center gap-2"
-            >
-              <Upload className="w-4 h-4" />
-              <span className="hidden sm:inline">New Scan</span>
-            </Link>
-          </div>
+          <Link to="/dashboard/scan" className="btn-primary" style={{ fontSize: '12px', padding: '8px 16px', gap: '6px' }}>
+            <Upload size={14} /> New Scan
+          </Link>
         </header>
 
-        {/* Page content */}
-        <div className="p-4 lg:p-8">
+        <div style={{ flex: 1, padding: '32px' }}>
           <Outlet />
         </div>
       </main>

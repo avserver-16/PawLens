@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
-import { 
-  Shield, Zap, BarChart3, Upload, ArrowRight, Star, 
-  ChevronRight, Dog, Microscope, Heart, Clock, Menu, X 
+import {
+  Shield, Zap, BarChart3, ArrowRight, Star,
+  Microscope, Heart, Clock, Menu, X
 } from 'lucide-react';
 import { useState } from 'react';
 
@@ -11,75 +11,60 @@ function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 glass">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-9 h-9 md:w-10 md:h-10 rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center shadow-lg shadow-primary-500/20 group-hover:shadow-primary-500/40 transition-shadow">
-              <Dog className="w-5 h-5 md:w-6 md:h-6 text-white" />
+    <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 50, background: 'rgba(255,255,255,0.85)', backdropFilter: 'blur(16px)', borderBottom: '1px solid #f1f5f9' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', height: '64px' }}>
+          <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: 'linear-gradient(135deg, #6366f1, #4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 2px 8px rgba(99,102,241,0.2)' }}>
+              <svg style={{ width: '20px', height: '20px', color: '#fff' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="10" r="3" />
+                <circle cx="7" cy="6" r="1.5" fill="currentColor" />
+                <circle cx="17" cy="6" r="1.5" fill="currentColor" />
+                <path d="M12 13c-4 0-7 2-7 5a2 2 0 002 2h10a2 2 0 002-2c0-3-3-5-7-5z" />
+              </svg>
             </div>
-            <span className="text-xl md:text-2xl font-bold bg-gradient-to-r from-white to-surface-200 bg-clip-text text-transparent">
-              PawLens
-            </span>
+            <span style={{ fontSize: '20px', fontWeight: 700, color: '#1e293b', letterSpacing: '-0.02em' }}>PawLens</span>
           </Link>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8">
-            <a href="#features" className="text-surface-200 hover:text-white transition-colors text-sm font-medium">Features</a>
-            <a href="#how-it-works" className="text-surface-200 hover:text-white transition-colors text-sm font-medium">How It Works</a>
-            <a href="#testimonials" className="text-surface-200 hover:text-white transition-colors text-sm font-medium">Testimonials</a>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }} className="hidden md:flex">
+            <a href="#features" style={{ fontSize: '14px', fontWeight: 500, color: '#64748b', textDecoration: 'none' }}>Features</a>
+            <a href="#how-it-works" style={{ fontSize: '14px', fontWeight: 500, color: '#64748b', textDecoration: 'none' }}>How It Works</a>
+            <a href="#testimonials" style={{ fontSize: '14px', fontWeight: 500, color: '#64748b', textDecoration: 'none' }}>Testimonials</a>
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }} className="hidden md:flex">
             {user ? (
-              <Link
-                to="/dashboard"
-                className="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 text-sm"
-              >
-                Dashboard
+              <Link to="/dashboard" className="btn-primary" style={{ fontSize: '14px', padding: '10px 20px', gap: '8px' }}>
+                Dashboard <ArrowRight style={{ width: '16px', height: '16px' }} />
               </Link>
             ) : (
               <>
-                <Link
-                  to="/login"
-                  className="px-5 py-2.5 text-surface-200 hover:text-white transition-colors text-sm font-medium"
-                >
-                  Sign In
-                </Link>
-                <Link
-                  to="/register"
-                  className="px-5 py-2.5 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-medium hover:shadow-lg hover:shadow-primary-500/25 transition-all duration-300 text-sm"
-                >
-                  Get Started
-                </Link>
+                <Link to="/login" style={{ fontSize: '14px', fontWeight: 500, color: '#475569', textDecoration: 'none', padding: '10px 16px' }}>Sign In</Link>
+                <Link to="/register" className="btn-primary" style={{ fontSize: '14px', padding: '10px 20px' }}>Get Started Free</Link>
               </>
             )}
           </div>
 
-          {/* Mobile menu btn */}
-          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden text-white p-2">
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden" style={{ background: 'none', border: 'none', color: '#475569', padding: '8px', cursor: 'pointer' }}>
+            {mobileOpen ? <X style={{ width: '20px', height: '20px' }} /> : <Menu style={{ width: '20px', height: '20px' }} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile menu */}
       {mobileOpen && (
-        <div className="md:hidden glass border-t border-white/10 animate-fade-in">
-          <div className="px-4 py-4 space-y-3">
-            <a href="#features" onClick={() => setMobileOpen(false)} className="block text-surface-200 hover:text-white py-2">Features</a>
-            <a href="#how-it-works" onClick={() => setMobileOpen(false)} className="block text-surface-200 hover:text-white py-2">How It Works</a>
-            <a href="#testimonials" onClick={() => setMobileOpen(false)} className="block text-surface-200 hover:text-white py-2">Testimonials</a>
-            <div className="pt-3 border-t border-white/10 space-y-2">
-              {user ? (
-                <Link to="/dashboard" className="block w-full text-center px-5 py-2.5 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-medium">Dashboard</Link>
-              ) : (
-                <>
-                  <Link to="/login" className="block text-center text-surface-200 hover:text-white py-2">Sign In</Link>
-                  <Link to="/register" className="block w-full text-center px-5 py-2.5 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-xl font-medium">Get Started</Link>
-                </>
-              )}
-            </div>
+        <div className="md:hidden" style={{ background: '#fff', borderTop: '1px solid #f1f5f9', padding: '12px 24px' }}>
+          <a href="#features" onClick={() => setMobileOpen(false)} style={{ display: 'block', padding: '10px 0', fontSize: '14px', fontWeight: 500, color: '#475569', textDecoration: 'none' }}>Features</a>
+          <a href="#how-it-works" onClick={() => setMobileOpen(false)} style={{ display: 'block', padding: '10px 0', fontSize: '14px', fontWeight: 500, color: '#475569', textDecoration: 'none' }}>How It Works</a>
+          <a href="#testimonials" onClick={() => setMobileOpen(false)} style={{ display: 'block', padding: '10px 0', fontSize: '14px', fontWeight: 500, color: '#475569', textDecoration: 'none' }}>Testimonials</a>
+          <div style={{ paddingTop: '12px', borderTop: '1px solid #f1f5f9', marginTop: '4px' }}>
+            {user ? (
+              <Link to="/dashboard" className="btn-primary" style={{ width: '100%', fontSize: '14px' }}>Dashboard</Link>
+            ) : (
+              <>
+                <Link to="/login" style={{ display: 'block', textAlign: 'center', padding: '10px 0', fontSize: '14px', fontWeight: 500, color: '#475569', textDecoration: 'none' }}>Sign In</Link>
+                <Link to="/register" className="btn-primary" style={{ width: '100%', fontSize: '14px', marginTop: '8px' }}>Get Started Free</Link>
+              </>
+            )}
           </div>
         </div>
       )}
@@ -88,150 +73,107 @@ function Navbar() {
 }
 
 const features = [
-  {
-    icon: <Microscope className="w-6 h-6" />,
-    title: 'AI-Powered Diagnosis',
-    description: 'Advanced Vision Transformer model trained on thousands of canine skin disease images for accurate identification.',
-    color: 'from-primary-500 to-primary-600',
-  },
-  {
-    icon: <Zap className="w-6 h-6" />,
-    title: 'Instant Results',
-    description: 'Get disease predictions and detailed analysis in seconds. Just upload a photo and let our AI do the rest.',
-    color: 'from-amber-400 to-amber-500',
-  },
-  {
-    icon: <Heart className="w-6 h-6" />,
-    title: 'Treatment Guidance',
-    description: 'Receive comprehensive treatment recommendations, symptom details, and severity assessments for each diagnosis.',
-    color: 'from-rose-400 to-rose-500',
-  },
-  {
-    icon: <BarChart3 className="w-6 h-6" />,
-    title: 'Track History',
-    description: 'Keep a complete record of all diagnoses. Monitor your pet\'s skin health over time with detailed analytics.',
-    color: 'from-emerald-400 to-emerald-500',
-  },
-  {
-    icon: <Shield className="w-6 h-6" />,
-    title: 'Secure & Private',
-    description: 'Your pet\'s data is encrypted and protected. We follow industry-standard security practices.',
-    color: 'from-accent-400 to-accent-500',
-  },
-  {
-    icon: <Clock className="w-6 h-6" />,
-    title: '24/7 Availability',
-    description: 'Access PawLens anytime, anywhere. No appointments needed — get instant peace of mind for your pet.',
-    color: 'from-primary-400 to-accent-400',
-  },
+  { icon: <Microscope size={20} />, title: 'AI-Powered Diagnosis', description: 'Advanced Vision Transformer model trained on thousands of canine skin disease images for accurate identification.', color: '#eef2ff', iconColor: '#4f46e5' },
+  { icon: <Zap size={20} />, title: 'Instant Results', description: 'Get disease predictions and detailed analysis in seconds. Upload a photo and let our AI do the rest.', color: '#fffbeb', iconColor: '#d97706' },
+  { icon: <Heart size={20} />, title: 'Treatment Guidance', description: 'Comprehensive treatment recommendations, symptom details, and severity assessments for each diagnosis.', color: '#fef2f2', iconColor: '#dc2626' },
+  { icon: <BarChart3 size={20} />, title: 'Track Health History', description: "Keep a complete record of all diagnoses. Monitor your pet's skin health over time with detailed analytics.", color: '#f0fdf4', iconColor: '#16a34a' },
+  { icon: <Shield size={20} />, title: 'Secure & Private', description: "Your pet's data is encrypted and protected. We follow industry-standard security practices.", color: '#f5f3ff', iconColor: '#7c3aed' },
+  { icon: <Clock size={20} />, title: '24/7 Availability', description: 'Access PawLens anytime, anywhere. No appointments needed — get instant peace of mind.', color: '#f0f9ff', iconColor: '#0284c7' },
 ];
 
 const steps = [
-  { step: '01', title: 'Upload Photo', description: 'Take a clear photo of the affected skin area on your dog and upload it to PawLens.' },
-  { step: '02', title: 'AI Analysis', description: 'Our Vision Transformer model analyzes the image and identifies potential skin conditions.' },
-  { step: '03', title: 'Get Results', description: 'Receive a detailed diagnosis with disease name, symptoms, treatment options, and severity.' },
-  { step: '04', title: 'Take Action', description: 'Follow the treatment guidance and consult your vet with the diagnosis report.' },
+  { num: '1', title: 'Upload Photo', desc: 'Take a clear photo of the affected skin area on your dog and upload it.' },
+  { num: '2', title: 'AI Analysis', desc: 'Our Vision Transformer model analyzes the image and identifies skin conditions.' },
+  { num: '3', title: 'Get Results', desc: 'Receive a detailed diagnosis with disease name, symptoms, treatment, and severity.' },
+  { num: '4', title: 'Take Action', desc: 'Follow treatment guidance and consult your vet with the generated report.' },
 ];
 
 const testimonials = [
-  { name: 'Dr. Sarah Mitchell', role: 'Veterinarian', text: 'PawLens has been an invaluable tool for early screening. The AI accuracy is impressive and helps pet owners identify issues before they become serious.', rating: 5 },
-  { name: 'James Rodriguez', role: 'Dog Owner', text: 'I noticed a weird patch on my Golden Retriever and PawLens identified it as a fungal infection. Took him to the vet and the diagnosis was confirmed!', rating: 5 },
-  { name: 'Emily Chen', role: 'Pet Groomer', text: 'I recommend PawLens to all my clients. It\'s quick, accurate, and gives detailed treatment guidance. A game-changer for pet care.', rating: 5 },
+  { name: 'Dr. Sarah Mitchell', role: 'Veterinarian', text: 'PawLens has been invaluable for early screening. The AI accuracy is impressive and helps pet owners identify issues early.', rating: 5 },
+  { name: 'James Rodriguez', role: 'Dog Owner', text: 'I noticed a weird patch on my Golden Retriever and PawLens identified it as a fungal infection. The vet confirmed it!', rating: 5 },
+  { name: 'Emily Chen', role: 'Pet Groomer', text: 'I recommend PawLens to all my clients. Quick, accurate, and gives detailed treatment guidance. A game-changer for pet care.', rating: 5 },
 ];
-
-const diseases = ['Bacterial Dermatosis', 'Fungal Infections', 'Allergic Dermatosis', 'Parasitic Disease', 'Healthy Skin'];
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-surface-950 text-white overflow-x-hidden">
+    <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Inter', system-ui, sans-serif" }}>
       <Navbar />
 
       {/* Hero */}
-      <section className="relative min-h-screen flex items-center justify-center pt-20">
-        {/* Background effects */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-72 md:w-96 h-72 md:h-96 bg-primary-600/20 rounded-full blur-[128px] animate-float" />
-          <div className="absolute bottom-1/4 right-1/4 w-72 md:w-96 h-72 md:h-96 bg-accent-600/20 rounded-full blur-[128px] animate-float" style={{ animationDelay: '3s' }} />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] md:w-[800px] h-[600px] md:h-[800px] bg-gradient-to-br from-primary-600/5 to-accent-600/5 rounded-full blur-3xl" />
+      <section style={{ paddingTop: '120px', paddingBottom: '60px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '-200px', right: '-100px', width: '500px', height: '500px', background: '#eef2ff', borderRadius: '50%', filter: 'blur(120px)', opacity: 0.6 }} />
+        <div style={{ position: 'absolute', bottom: '-100px', left: '-100px', width: '400px', height: '400px', background: '#f5f3ff', borderRadius: '50%', filter: 'blur(100px)', opacity: 0.5 }} />
+
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '6px 16px', borderRadius: '100px', background: '#eef2ff', border: '1px solid #e0e7ff', marginBottom: '24px' }}>
+            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#22c55e' }} />
+            <span style={{ fontSize: '12px', fontWeight: 600, color: '#4338ca', letterSpacing: '0.05em', textTransform: 'uppercase' }}>Powered by Vision Transformer AI</span>
+          </div>
+
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 52px)', fontWeight: 800, color: '#0f172a', lineHeight: 1.1, letterSpacing: '-0.03em', margin: '0 0 20px 0' }}>
+            Protect Your Dog's{' '}
+            <span style={{ background: 'linear-gradient(135deg, #4f46e5, #7c3aed)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Skin Health
+            </span>
+          </h1>
+
+          <p style={{ fontSize: '18px', color: '#64748b', lineHeight: 1.7, maxWidth: '560px', margin: '0 auto 32px auto' }}>
+            Upload a photo of your dog's skin condition and get an instant AI-powered diagnosis with treatment recommendations.
+          </p>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '36px' }}>
+            <Link to="/register" className="btn-primary" style={{ fontSize: '16px', padding: '14px 32px', gap: '8px' }}>
+              Start Free Analysis <ArrowRight size={16} />
+            </Link>
+            <a href="#how-it-works" className="btn-secondary" style={{ fontSize: '16px', padding: '14px 32px' }}>
+              See How It Works
+            </a>
+          </div>
+
+          <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
+            {['Demodicosis', 'Fungal Infections', 'Dermatosis', 'Hypersensitivity', 'Healthy Skin','Ringworm'].map(d => (
+              <span key={d} style={{ padding: '4px 12px', borderRadius: '100px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '12px', fontWeight: 500, color: '#64748b' }}>{d}</span>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="animate-slide-up">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6 md:mb-8 text-xs md:text-sm">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-surface-200">Powered by Vision Transformer AI</span>
-            </div>
-
-            <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-black leading-tight mb-4 md:mb-6">
-              <span className="bg-gradient-to-r from-white via-primary-200 to-accent-300 bg-clip-text text-transparent">
-                Protect Your
-              </span>
-              <br />
-              <span className="bg-gradient-to-r from-primary-400 via-accent-400 to-emerald-400 bg-clip-text text-transparent animate-gradient">
-                Dog's Skin Health
-              </span>
-            </h1>
-
-            <p className="text-base sm:text-lg md:text-xl text-surface-200 max-w-2xl mx-auto mb-8 md:mb-10 leading-relaxed px-4">
-              Upload a photo of your dog's skin condition and get an instant AI-powered diagnosis 
-              with treatment recommendations. Fast, accurate, and always available.
-            </p>
-
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link
-                to="/register"
-                className="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-primary-500/25 transition-all duration-300 flex items-center justify-center gap-2"
-              >
-                Start Free Analysis
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Link>
-              <a
-                href="#how-it-works"
-                className="w-full sm:w-auto px-8 py-4 glass rounded-2xl font-semibold text-lg hover:bg-white/10 transition-all duration-300 text-center"
-              >
-                See How It Works
-              </a>
-            </div>
-
-            {/* Disease tags */}
-            <div className="mt-10 md:mt-16 flex flex-wrap items-center justify-center gap-2 md:gap-3">
-              <span className="text-xs text-surface-200/60 mr-1 md:mr-2">Detects:</span>
-              {diseases.map((d) => (
-                <span key={d} className="px-3 py-1.5 rounded-full glass text-xs text-surface-200 hover:text-white hover:bg-white/10 transition-all cursor-default">
-                  {d}
-                </span>
-              ))}
-            </div>
+      {/* Stats band */}
+      <section style={{ borderTop: '1px solid #f1f5f9', borderBottom: '1px solid #f1f5f9', background: '#fcfcfd' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '32px 24px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', textAlign: 'center' }}>
+            {[
+              { value: '91%+', label: 'Accuracy Rate' },
+              { value: '6', label: 'Diseases Detected' },
+              { value: '<5s', label: 'Analysis Time' },
+              { value: '24/7', label: 'Available' },
+            ].map(s => (
+              <div key={s.label}>
+                <p style={{ fontSize: '28px', fontWeight: 700, color: '#1e293b' }}>{s.value}</p>
+                <p style={{ fontSize: '13px', color: '#94a3b8', marginTop: '4px' }}>{s.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20 md:py-32 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 md:mb-16">
-            <span className="text-primary-400 font-semibold text-sm tracking-wider uppercase">Features</span>
-            <h2 className="text-3xl md:text-5xl font-bold mt-3 mb-4 md:mb-6">
-              Everything You Need for
-              <span className="bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent"> Pet Skin Care</span>
-            </h2>
-            <p className="text-surface-200 max-w-2xl mx-auto text-base md:text-lg">
-              Advanced AI technology meets compassionate pet care. PawLens gives you the tools to keep your furry friend healthy.
-            </p>
+      <section id="features" style={{ padding: '80px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 48px auto' }}>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#4f46e5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Features</p>
+            <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em', margin: '0 0 12px 0' }}>Everything for Pet Skin Care</h2>
+            <p style={{ fontSize: '15px', color: '#64748b' }}>Advanced AI technology meets compassionate pet care.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {features.map((feature, i) => (
-              <div
-                key={i}
-                className="group p-6 md:p-8 rounded-2xl glass hover:bg-white/[0.08] transition-all duration-500 hover:border-white/20 hover:-translate-y-1"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-5 shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                  {feature.icon}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+            {features.map((f, i) => (
+              <div key={i} className="card" style={{ padding: '28px' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: f.color, display: 'flex', alignItems: 'center', justifyContent: 'center', color: f.iconColor, marginBottom: '16px' }}>
+                  {f.icon}
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold mb-3">{feature.title}</h3>
-                <p className="text-surface-200 text-sm md:text-base leading-relaxed">{feature.description}</p>
+                <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#1e293b', marginBottom: '8px' }}>{f.title}</h3>
+                <p style={{ fontSize: '14px', color: '#64748b', lineHeight: 1.6 }}>{f.description}</p>
               </div>
             ))}
           </div>
@@ -239,32 +181,21 @@ export default function LandingPage() {
       </section>
 
       {/* How it works */}
-      <section id="how-it-works" className="py-20 md:py-32 relative">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary-950/20 to-transparent" />
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 md:mb-16">
-            <span className="text-primary-400 font-semibold text-sm tracking-wider uppercase">How It Works</span>
-            <h2 className="text-3xl md:text-5xl font-bold mt-3 mb-4 md:mb-6">
-              Simple as
-              <span className="bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent"> 1-2-3-4</span>
-            </h2>
+      <section id="how-it-works" style={{ padding: '80px 0', background: '#f8fafc' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 48px auto' }}>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#4f46e5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>How It Works</p>
+            <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>Simple 4-Step Process</h2>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', textAlign: 'center' }}>
             {steps.map((s, i) => (
-              <div key={i} className="relative group">
-                <div className="p-6 md:p-8 rounded-2xl glass hover:bg-white/[0.08] transition-all duration-500 text-center">
-                  <div className="text-4xl md:text-5xl font-black bg-gradient-to-br from-primary-500/20 to-accent-500/20 bg-clip-text text-transparent mb-4">
-                    {s.step}
-                  </div>
-                  <h3 className="text-lg font-semibold mb-3">{s.title}</h3>
-                  <p className="text-surface-200 text-sm leading-relaxed">{s.description}</p>
+              <div key={i}>
+                <div style={{ width: '56px', height: '56px', borderRadius: '16px', background: 'linear-gradient(135deg, #6366f1, #4338ca)', color: '#fff', fontSize: '20px', fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', boxShadow: '0 4px 12px rgba(99,102,241,0.25)' }}>
+                  {s.num}
                 </div>
-                {i < steps.length - 1 && (
-                  <div className="hidden lg:block absolute top-1/2 -right-4 transform -translate-y-1/2">
-                    <ChevronRight className="w-6 h-6 text-primary-500/30" />
-                  </div>
-                )}
+                <h3 style={{ fontSize: '16px', fontWeight: 600, color: '#1e293b', marginBottom: '8px' }}>{s.title}</h3>
+                <p style={{ fontSize: '13px', color: '#64748b', lineHeight: 1.6 }}>{s.desc}</p>
               </div>
             ))}
           </div>
@@ -272,32 +203,29 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-20 md:py-32">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12 md:mb-16">
-            <span className="text-primary-400 font-semibold text-sm tracking-wider uppercase">Testimonials</span>
-            <h2 className="text-3xl md:text-5xl font-bold mt-3">
-              Trusted by
-              <span className="bg-gradient-to-r from-primary-400 to-accent-400 bg-clip-text text-transparent"> Pet Lovers</span>
-            </h2>
+      <section id="testimonials" style={{ padding: '80px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 48px auto' }}>
+            <p style={{ fontSize: '13px', fontWeight: 600, color: '#4f46e5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Testimonials</p>
+            <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>Trusted by Pet Lovers</h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
             {testimonials.map((t, i) => (
-              <div key={i} className="p-6 md:p-8 rounded-2xl glass hover:bg-white/[0.08] transition-all duration-500">
-                <div className="flex gap-1 mb-4">
+              <div key={i} className="card" style={{ padding: '28px' }}>
+                <div style={{ display: 'flex', gap: '2px', marginBottom: '16px' }}>
                   {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <Star key={j} size={16} style={{ color: '#f59e0b', fill: '#f59e0b' }} />
                   ))}
                 </div>
-                <p className="text-surface-200 text-sm md:text-base leading-relaxed mb-6 italic">"{t.text}"</p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center font-bold text-sm">
+                <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.7, marginBottom: '20px' }}>"{t.text}"</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid #f1f5f9' }}>
+                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #818cf8, #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '13px', fontWeight: 700 }}>
                     {t.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
-                    <p className="font-semibold text-sm">{t.name}</p>
-                    <p className="text-surface-200 text-xs">{t.role}</p>
+                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#1e293b' }}>{t.name}</p>
+                    <p style={{ fontSize: '12px', color: '#94a3b8' }}>{t.role}</p>
                   </div>
                 </div>
               </div>
@@ -307,40 +235,34 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-20 md:py-32">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="p-8 md:p-16 rounded-3xl bg-gradient-to-br from-primary-600/20 to-accent-600/20 glass relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-48 md:w-64 h-48 md:h-64 bg-primary-500/10 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 md:w-64 h-48 md:h-64 bg-accent-500/10 rounded-full blur-3xl" />
-            <div className="relative">
-              <h2 className="text-3xl md:text-5xl font-bold mb-4 md:mb-6">Ready to Protect Your Pet?</h2>
-              <p className="text-surface-200 text-base md:text-lg mb-8 md:mb-10 max-w-xl mx-auto">
-                Join thousands of pet owners who trust PawLens for early detection and peace of mind.
-              </p>
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 px-8 md:px-10 py-4 bg-gradient-to-r from-primary-600 to-accent-600 text-white rounded-2xl font-semibold text-lg hover:shadow-2xl hover:shadow-primary-500/25 transition-all duration-300"
-              >
-                Get Started Free
-                <ArrowRight className="w-5 h-5" />
-              </Link>
-            </div>
+      <section style={{ padding: '80px 0' }}>
+        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ borderRadius: '24px', background: 'linear-gradient(135deg, #4f46e5, #3730a3)', padding: '60px 40px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-40px', right: '-40px', width: '200px', height: '200px', background: 'rgba(255,255,255,0.05)', borderRadius: '50%', filter: 'blur(40px)' }} />
+            <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#fff', marginBottom: '12px', letterSpacing: '-0.02em', position: 'relative' }}>Ready to Protect Your Pet?</h2>
+            <p style={{ fontSize: '16px', color: '#c7d2fe', marginBottom: '32px', maxWidth: '420px', margin: '0 auto 32px auto', lineHeight: 1.6, position: 'relative' }}>
+              Join pet owners who trust PawLens for early detection and peace of mind.
+            </p>
+            <Link to="/register" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', background: '#fff', color: '#4338ca', borderRadius: '12px', fontWeight: 600, fontSize: '16px', textDecoration: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.1)', position: 'relative', transition: 'transform 0.2s' }}>
+              Get Started Free <ArrowRight size={16} />
+            </Link>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="py-8 md:py-12 border-t border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-accent-500 flex items-center justify-center">
-                <Dog className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-bold text-lg">PawLens</span>
+      <footer style={{ padding: '24px 0', borderTop: '1px solid #f1f5f9' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ width: '28px', height: '28px', borderRadius: '8px', background: 'linear-gradient(135deg, #6366f1, #4338ca)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <svg style={{ width: '14px', height: '14px', color: '#fff' }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="12" cy="10" r="3" />
+                <path d="M12 13c-4 0-7 2-7 5a2 2 0 002 2h10a2 2 0 002-2c0-3-3-5-7-5z" />
+              </svg>
             </div>
-            <p className="text-surface-200 text-sm">© 2026 PawLens. All rights reserved.</p>
+            <span style={{ fontWeight: 700, color: '#334155' }}>PawLens</span>
           </div>
+          <p style={{ fontSize: '13px', color: '#94a3b8' }}>© 2026 PawLens. All rights reserved.</p>
         </div>
       </footer>
     </div>
