@@ -2,9 +2,10 @@ import { Link } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
 import {
   Shield, Zap, BarChart3, ArrowRight, Star,
-  Microscope, Heart, Clock, Menu, X
+  Microscope, Heart, Clock, Menu, X, Send, Loader2
 } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { feedbackAPI } from '../auth/services/services';
 
 function Navbar() {
   const { user } = useAuth();
@@ -88,13 +89,170 @@ const steps = [
   { num: '4', title: 'Take Action', desc: 'Follow treatment guidance and consult your vet with the generated report.' },
 ];
 
-const testimonials = [
+const hardcodedTestimonials = [
   { name: 'Dr. Sarah Mitchell', role: 'Veterinarian', text: 'PawLens has been invaluable for early screening. The AI accuracy is impressive and helps pet owners identify issues early.', rating: 5 },
   { name: 'James Rodriguez', role: 'Dog Owner', text: 'I noticed a weird patch on my Golden Retriever and PawLens identified it as a fungal infection. The vet confirmed it!', rating: 5 },
   { name: 'Emily Chen', role: 'Pet Groomer', text: 'I recommend PawLens to all my clients. Quick, accurate, and gives detailed treatment guidance. A game-changer for pet care.', rating: 5 },
 ];
 
+function TestimonialCard({ name, role, text, rating }) {
+  return (
+    <div className="card" style={{ padding: '28px' }}>
+      <div style={{ display: 'flex', gap: '2px', marginBottom: '16px' }}>
+        {Array.from({ length: rating }).map((_, j) => (
+          <Star key={j} size={16} style={{ color: '#f59e0b', fill: '#f59e0b' }} />
+        ))}
+        {Array.from({ length: 5 - rating }).map((_, j) => (
+          <Star key={`e${j}`} size={16} style={{ color: '#e2e8f0' }} />
+        ))}
+      </div>
+      <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.7, marginBottom: '20px' }}>"{text}"</p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid #f1f5f9' }}>
+        <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #818cf8, #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '13px', fontWeight: 700 }}>
+          {name.split(' ').map(n => n[0]).join('')}
+        </div>
+        <div>
+          <p style={{ fontSize: '14px', fontWeight: 600, color: '#1e293b' }}>{name}</p>
+          <p style={{ fontSize: '12px', color: '#94a3b8' }}>{role}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FeedbackForm({ onSubmitted }) {
+  const [name, setName] = useState('');
+  const [role, setRole] = useState('');
+  const [message, setMessage] = useState('');
+  const [stars, setStars] = useState(0);
+  const [hoveredStar, setHoveredStar] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name.trim() || !message.trim() || stars === 0) {
+      setError('Please fill in your name, message, and select a rating.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      await feedbackAPI.create({ name: name.trim(), role: role.trim() || 'Pet Owner', message: message.trim(), stars });
+      setSuccess(true);
+      setName(''); setRole(''); setMessage(''); setStars(0);
+      if (onSubmitted) onSubmitted();
+      setTimeout(() => setSuccess(false), 3000);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to submit feedback.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="card" style={{ padding: '32px', maxWidth: '480px', width: '100%' }}>
+      <h3 style={{ fontSize: '18px', fontWeight: 700, color: '#0f172a', marginBottom: '4px' }}>Share Your Experience</h3>
+      <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '24px' }}>We'd love to hear your feedback about PawLens</p>
+
+      {success && (
+        <div style={{ padding: '12px', borderRadius: '12px', background: '#f0fdf4', border: '1px solid #bbf7d0', color: '#16a34a', fontSize: '13px', marginBottom: '16px', textAlign: 'center' }}>
+          ✓ Thank you for your feedback!
+        </div>
+      )}
+      {error && (
+        <div style={{ padding: '12px', borderRadius: '12px', background: '#fef2f2', border: '1px solid #fecaca', color: '#dc2626', fontSize: '13px', marginBottom: '16px' }}>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>Name *</label>
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Your name"
+              style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '13px', outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+          </div>
+          <div>
+            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>Role <span style={{ color: '#cbd5e1' }}>(optional)</span></label>
+            <input type="text" value={role} onChange={e => setRole(e.target.value)} placeholder="e.g., Dog Owner"
+              style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '13px', outline: 'none', background: '#fff', boxSizing: 'border-box' }} />
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>Rating *</label>
+          <div style={{ display: 'flex', gap: '4px' }}>
+            {[1, 2, 3, 4, 5].map(s => (
+              <button key={s} type="button" onClick={() => setStars(s)}
+                onMouseEnter={() => setHoveredStar(s)} onMouseLeave={() => setHoveredStar(0)}
+                style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '2px', transition: 'transform 0.15s', transform: (hoveredStar >= s || stars >= s) ? 'scale(1.15)' : 'scale(1)' }}>
+                <Star size={24} style={{ color: (hoveredStar >= s || stars >= s) ? '#f59e0b' : '#e2e8f0', fill: (hoveredStar >= s || stars >= s) ? '#f59e0b' : 'none', transition: 'all 0.15s' }} />
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#334155', marginBottom: '6px' }}>Message *</label>
+          <textarea value={message} onChange={e => setMessage(e.target.value)} placeholder="Tell us about your experience..."
+            rows={3}
+            style={{ width: '100%', padding: '10px 14px', borderRadius: '10px', border: '1px solid #e2e8f0', fontSize: '13px', outline: 'none', resize: 'vertical', fontFamily: 'inherit', background: '#fff', boxSizing: 'border-box' }} />
+        </div>
+
+        <button type="submit" disabled={loading} className="btn-primary"
+          style={{ width: '100%', padding: '12px', fontSize: '14px', gap: '8px', opacity: loading ? 0.6 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}>
+          {loading ? (
+            <><Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> Submitting...</>
+          ) : (
+            <><Send size={16} /> Submit Feedback</>
+          )}
+        </button>
+      </form>
+
+      <style>{`@keyframes spin { to { transform: rotate(360deg) } }`}</style>
+    </div>
+  );
+}
+
+function LiveTestimonials() {
+  const [feedbacks, setFeedbacks] = useState([]);
+
+  const loadFeedbacks = async () => {
+    try {
+      const res = await feedbackAPI.getTop();
+      setFeedbacks(res.data.feedbacks);
+    } catch (err) {
+      console.error('Failed to load feedbacks:', err);
+    }
+  };
+
+  useEffect(() => { loadFeedbacks(); }, []);
+
+  if (feedbacks.length === 0) return null;
+
+  return (
+    <section style={{ padding: '80px 0', background: '#f8fafc' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+        <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 48px auto' }}>
+          <p style={{ fontSize: '13px', fontWeight: 600, color: '#4f46e5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Community Feedback</p>
+          <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>What Users Are Saying</h2>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
+          {feedbacks.map((f) => (
+            <TestimonialCard key={f._id} name={f.name} role={f.role} text={f.message} rating={f.stars} />
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function LandingPage() {
+  const [refreshKey, setRefreshKey] = useState(0);
+
   return (
     <div style={{ minHeight: '100vh', background: '#fff', fontFamily: "'Inter', system-ui, sans-serif" }}>
       <Navbar />
@@ -131,7 +289,7 @@ export default function LandingPage() {
           </div>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px' }}>
-            {['Demodicosis', 'Fungal Infections', 'Dermatosis', 'Hypersensitivity', 'Healthy Skin','Ringworm'].map(d => (
+            {['Demodicosis', 'Fungal Infections', 'Dermatosis', 'Hypersensitivity', 'Healthy Skin', 'Ringworm'].map(d => (
               <span key={d} style={{ padding: '4px 12px', borderRadius: '100px', background: '#f8fafc', border: '1px solid #e2e8f0', fontSize: '12px', fontWeight: 500, color: '#64748b' }}>{d}</span>
             ))}
           </div>
@@ -202,7 +360,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Hardcoded Testimonials */}
       <section id="testimonials" style={{ padding: '80px 0' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
           <div style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 48px auto' }}>
@@ -211,25 +369,27 @@ export default function LandingPage() {
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px' }}>
-            {testimonials.map((t, i) => (
-              <div key={i} className="card" style={{ padding: '28px' }}>
-                <div style={{ display: 'flex', gap: '2px', marginBottom: '16px' }}>
-                  {Array.from({ length: t.rating }).map((_, j) => (
-                    <Star key={j} size={16} style={{ color: '#f59e0b', fill: '#f59e0b' }} />
-                  ))}
-                </div>
-                <p style={{ fontSize: '14px', color: '#475569', lineHeight: 1.7, marginBottom: '20px' }}>"{t.text}"</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', paddingTop: '16px', borderTop: '1px solid #f1f5f9' }}>
-                  <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(135deg, #818cf8, #4f46e5)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: '13px', fontWeight: 700 }}>
-                    {t.name.split(' ').map(n => n[0]).join('')}
-                  </div>
-                  <div>
-                    <p style={{ fontSize: '14px', fontWeight: 600, color: '#1e293b' }}>{t.name}</p>
-                    <p style={{ fontSize: '12px', color: '#94a3b8' }}>{t.role}</p>
-                  </div>
-                </div>
-              </div>
+            {hardcodedTestimonials.map((t, i) => (
+              <TestimonialCard key={i} name={t.name} role={t.role} text={t.text} rating={t.rating} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Live Community Feedback (top 3 from DB) */}
+      <LiveTestimonials key={refreshKey} />
+
+      {/* Feedback Form */}
+      <section style={{ padding: '80px 0' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 24px' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div style={{ textAlign: 'center', maxWidth: '600px', marginBottom: '32px' }}>
+              <p style={{ fontSize: '13px', fontWeight: 600, color: '#4f46e5', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: '12px' }}>Leave Feedback</p>
+              <h2 style={{ fontSize: '32px', fontWeight: 700, color: '#0f172a', letterSpacing: '-0.02em', margin: 0 }}>Tell Us What You Think</h2>
+              <p style={{ fontSize: '15px', color: '#64748b', marginTop: '12px' }}>Your feedback helps us improve PawLens for everyone.</p>
+            </div>
+
+            <FeedbackForm onSubmitted={() => setRefreshKey(k => k + 1)} />
           </div>
         </div>
       </section>

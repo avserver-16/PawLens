@@ -26,4 +26,10 @@ export const diagnosisAPI = {
   getStats: () => api.get('/diagnosis/stats'),
 };
 
+// Feedback API
+export const feedbackAPI = {
+  create: (data) => api.post('/feedback', data),
+  getTop: () => api.get('/feedback/top'),
+};
+
 export default api;

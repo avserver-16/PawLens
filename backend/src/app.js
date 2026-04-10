@@ -4,6 +4,7 @@ const cors = require('cors');
 
 const authRoutes = require('./routes/auth.routes');
 const diagnosisRoutes = require('./routes/diagnosis.routes');
+const feedbackRoutes = require('./routes/feedback.routes');
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use(cors({
 // Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/diagnosis', diagnosisRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
