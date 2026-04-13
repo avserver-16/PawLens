@@ -50,6 +50,7 @@ pawlensai/roboflowvenv/
 pawlensai/.ipynb_checkpoints/
 pawlensai/__pycache__/
 pawlensai/.DS_Store
+pawlensai/ztest
 
 # =========================
 # General
