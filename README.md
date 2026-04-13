@@ -1,6 +1,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/React-19.1-61DAFB?style=for-the-badge&logo=react&logoColor=white" alt="React" />
   <img src="https://img.shields.io/badge/Express-5.2-000?style=for-the-badge&logo=express&logoColor=white" alt="Express" />
+  <img src="https://img.shields.io/badge/Flask-3.1-000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask" />
   <img src="https://img.shields.io/badge/MongoDB-Atlas-47A248?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
   <img src="https://img.shields.io/badge/PyTorch-ViT-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white" alt="PyTorch" />
   <img src="https://img.shields.io/badge/TailwindCSS-4.2-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="TailwindCSS" />
@@ -87,6 +88,8 @@ The model classifies canine skin conditions into **6 categories**:
 
 ### AI / ML
 - **PyTorch** with Vision Transformer (ViT) architecture
+- **Flask** microservice for model inference API
+- **timm** (PyTorch Image Models) for ViT model loading
 - **Roboflow** for dataset curation and augmentation
 - Custom training pipeline with hyperparameter tuning
 
@@ -120,13 +123,16 @@ PawLens/
 │   ├── src/
 │   │   ├── controllers/
 │   │   │   ├── auth.controller.js
-│   │   │   └── diagnosis.controller.js
+│   │   │   ├── diagnosis.controller.js   # Calls Python AI service
+│   │   │   └── feedback.controller.js
 │   │   ├── models/
 │   │   │   ├── user.model.js
-│   │   │   └── diagnosis.model.js
+│   │   │   ├── diagnosis.model.js
+│   │   │   └── feedback.model.js
 │   │   ├── routes/
 │   │   │   ├── auth.routes.js
-│   │   │   └── diagnosis.routes.js
+│   │   │   ├── diagnosis.routes.js
+│   │   │   └── feedback.routes.js
 │   │   ├── middleswares/
 │   │   │   └── auth.middleware.js
 │   │   ├── services/
@@ -138,7 +144,9 @@ PawLens/
 │   ├── .env
 │   └── package.json
 │
-├── pawlensai/                  # AI model training
+├── pawlensai/                  # AI model training & inference service
+│   ├── app.py                  # Flask API microservice for predictions
+│   ├── requirements.txt        # Python dependencies
 │   ├── training_model.ipynb    # Main training notebook
 │   ├── hyperparameterized_model.ipynb
 │   ├── predict.ipynb           # Inference notebook
@@ -163,9 +171,9 @@ PawLens/
 ### Prerequisites
 
 - **Node.js** v18+ and **npm**
+- **Python 3.12+** with **Conda** (Anaconda or Miniconda)
 - **MongoDB Atlas** account (or local MongoDB instance)
 - **ImageKit** account for image storage
-- **Python 3.9+** and **PyTorch** (for model training only)
 
 ### Installation
 
@@ -190,6 +198,16 @@ cd ../frontend
 npm install
 ```
 
+4. **Set up the AI service**
+
+```bash
+cd ../pawlensai
+conda activate ./roboflowvenv
+python -m pip install -r requirements.txt
+```
+
+> **Note:** The `roboflowvenv` is a Conda environment. Use `conda activate ./roboflowvenv` (not `source activate`). If `pip` gives a "bad interpreter" error, use `python -m pip install` instead.
+
 ### Environment Variables
 
 Create a `.env` file in the `backend/` directory:
@@ -199,31 +217,46 @@ PORT=3000
 MONGO_URI=mongodb+srv://<username>:<password>@<cluster>.mongodb.net/pawlens
 IMAGEKIT_PRIVATE_KEY=your_imagekit_private_key
 JWT_SECRET=your_jwt_secret_key
+AI_SERVICE_URL=http://localhost:5001
 ```
 
 > **Note:** Generate a strong `JWT_SECRET` using `openssl rand -hex 32`
 
 ### Running the Application
 
-**Start the backend server:**
+You need **three terminals** to run the full stack:
+
+**Terminal 1 — AI Service (Flask + PyTorch):**
+
+```bash
+cd pawlensai
+conda activate ./roboflowvenv
+python app.py
+# Runs on http://localhost:5001
+```
+
+**Terminal 2 — Backend API (Express):**
 
 ```bash
 cd backend
 npm run dev        # Development (with nodemon)
 # or
 npm start          # Production
+# Runs on http://localhost:3000
 ```
 
-**Start the frontend dev server:**
+**Terminal 3 — Frontend (React/Vite):**
 
 ```bash
 cd frontend
 npm run dev
+# Runs on http://localhost:5173
 ```
 
 The app will be available at:
 - **Frontend:** http://localhost:5173
 - **Backend API:** http://localhost:3000
+- **AI Service:** http://localhost:5001
 
 ---
 
@@ -231,7 +264,20 @@ The app will be available at:
 
 ### Architecture
 
-PawLens uses a **Vision Transformer (ViT)** architecture for image classification. ViTs split images into fixed-size patches, linearly embed them, add position embeddings, and feed the sequence into a standard Transformer encoder — achieving state-of-the-art results on image classification tasks.
+PawLens uses a **Vision Transformer (ViT-Base/16)** architecture (`vit_base_patch16_224`) for image classification. ViTs split images into fixed-size 16×16 patches, linearly embed them, add position embeddings, and feed the sequence into a standard Transformer encoder — achieving state-of-the-art results on image classification tasks.
+
+The model is served via a **Flask microservice** (`pawlensai/app.py`) that:
+1. Loads `best_vit_model.pth` into memory at startup
+2. Accepts image uploads via a REST API (`POST /predict`)
+3. Preprocesses images (resize to 224×224, normalize)
+4. Runs inference and returns the predicted class with confidence scores
+5. The Node.js backend calls this service when a user uploads a scan
+
+```
+User Upload → Express Backend → Flask AI Service → ViT Model → Prediction
+                                     ↓
+                              best_vit_model.pth
+```
 
 ### Dataset
 
@@ -251,8 +297,9 @@ The dataset was curated using [Roboflow](https://universe.roboflow.com/errol-iyl
 
 ### Training
 
-- **Framework:** PyTorch
-- **Model:** Pre-trained ViT with fine-tuning on the custom dataset
+- **Framework:** PyTorch with `timm` (PyTorch Image Models)
+- **Model:** Pre-trained ViT-Base/16 with fine-tuning on the custom dataset
+- **Input:** 224×224 RGB images, normalized with mean=0.5, std=0.5
 - **Hyperparameter tuning:** Documented in `hyperparameterized_model.ipynb`
 - **Model weights:** `best_vit_model.pth` (~327 MB)
 
@@ -284,6 +331,13 @@ The dataset was curated using [Roboflow](https://universe.roboflow.com/errol-iyl
 | Method | Endpoint | Description |
 |---|---|---|
 | `GET` | `/api/health` | API health check |
+
+### AI Service (Flask — port 5001)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | AI service health check |
+| `POST` | `/predict` | Predict skin disease from uploaded image (multipart form with `image` field) |
 
 ---
 
