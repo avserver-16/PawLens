@@ -105,14 +105,13 @@ const diseaseInfo = {
  * @returns {Object} - { prediction, confidence, probabilities }
  */
 async function getPredictionFromAI(imageBuffer) {
-  const FormData = (await import('form-data')).default;
-  const form = new FormData();
-  form.append('image', imageBuffer, { filename: 'upload.jpg', contentType: 'image/jpeg' });
+  const formData = new FormData();
+  const blob = new Blob([imageBuffer], { type: 'image/jpeg' });
+  formData.append('image', blob, 'upload.jpg');
 
   const response = await fetch(`${AI_SERVICE_URL}/predict`, {
     method: 'POST',
-    body: form,
-    headers: form.getHeaders(),
+    body: formData,
   });
 
   if (!response.ok) {
