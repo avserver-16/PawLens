@@ -110,6 +110,6 @@ def predict():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("AI_PORT", 5000))
+    port = int(os.environ.get("AI_PORT", 5001))
     print(f"Starting PawLens AI service on port {port}...")
     app.run(host="0.0.0.0", port=port, debug=False)

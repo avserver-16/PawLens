@@ -2,7 +2,7 @@ const Diagnosis = require('../models/diagnosis.model');
 const uploadFile = require('../services/storage.service');
 
 // URL of the Python AI microservice
-const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5000';
+const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5001';
 
 // Disease knowledge base for canine skin diseases
 // Keys match the model's 6 output classes
