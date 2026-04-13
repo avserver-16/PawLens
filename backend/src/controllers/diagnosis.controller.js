@@ -8,7 +8,7 @@ const AI_SERVICE_URL = process.env.AI_SERVICE_URL || 'http://localhost:5001';
 // Keys match the model's 6 output classes
 const diseaseInfo = {
   demodicosis: {
-    displayName: 'Demodicosis (Demodectic Mange)',
+    displayName: 'Demodicosis',
     description:
       'Demodicosis is a skin disease caused by Demodex mites that live in hair follicles. While small numbers of these mites are normal, an overgrowth due to immune deficiency causes hair loss, scaling, and secondary infections. It can be localized or generalized.',
     symptoms: [
@@ -24,7 +24,7 @@ const diseaseInfo = {
     severity: 'High',
   },
   dermatitis: {
-    displayName: 'Bacterial Dermatitis',
+    displayName: 'Dermatitis',
     description:
       'Bacterial dermatitis is a skin infection caused by bacteria, commonly Staphylococcus species. It can occur as a primary infection or secondary to other conditions like allergies or hormonal imbalances.',
     symptoms: [
@@ -65,7 +65,7 @@ const diseaseInfo = {
     severity: 'Low',
   },
   hypersensitivity: {
-    displayName: 'Hypersensitivity Allergic Dermatosis',
+    displayName: 'Hypersensitivity',
     description:
       'This condition results from the immune system overreacting to allergens such as food, pollen, dust mites, or flea saliva. It is one of the most common skin conditions in dogs and can be chronic.',
     symptoms: [
@@ -82,7 +82,7 @@ const diseaseInfo = {
     severity: 'Medium',
   },
   ringworm: {
-    displayName: 'Ringworm (Dermatophytosis)',
+    displayName: 'Ringworm',
     description:
       'Ringworm is a highly contagious fungal infection caused by dermatophytes. Despite its name, it is not caused by a worm. It affects the skin, hair, and occasionally nails, and can spread to other animals and humans.',
     symptoms: [
