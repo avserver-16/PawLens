@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* ── Dashboard/Auth palette (existing — DO NOT REMOVE) ── */
   --color-primary-50: #eef2ff;
   --color-primary-100: #e0e7ff;
   --color-primary-200: #c7d2fe;
@@ -35,6 +36,30 @@
   --color-slate-700: #334155;
   --color-slate-800: #1e293b;
   --color-slate-900: #0f172a;
+
+  /* ── Landing page warm palette (Stitch design) ── */
+  --color-lp-surface: #fbf9f4;
+  --color-lp-surface-dim: #dbdad5;
+  --color-lp-surface-container: #f0eee9;
+  --color-lp-surface-container-low: #f5f3ee;
+  --color-lp-surface-container-high: #eae8e3;
+  --color-lp-surface-variant: #e4e2dd;
+  --color-lp-on-surface: #1b1c19;
+  --color-lp-on-surface-variant: #504442;
+  --color-lp-primary: #271310;
+  --color-lp-on-primary: #ffffff;
+  --color-lp-primary-container: #3e2723;
+  --color-lp-on-primary-container: #ae8d87;
+  --color-lp-primary-fixed-dim: #e3beb8;
+  --color-lp-secondary: #895200;
+  --color-lp-on-secondary: #ffffff;
+  --color-lp-secondary-container: #feb158;
+  --color-lp-secondary-fixed: #ffdcbc;
+  --color-lp-tertiary: #765b00;
+  --color-lp-on-tertiary: #ffffff;
+  --color-lp-tertiary-container: #c9a74d;
+  --color-lp-outline: #827472;
+  --color-lp-outline-variant: #d3c3c0;
 }
 
 * {
@@ -74,6 +99,7 @@ body {
   animation: fade-in 0.3s ease-out forwards;
 }
 
+/* ── Dashboard/Auth component classes (existing — DO NOT REMOVE) ── */
 .card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
@@ -154,4 +180,24 @@ body {
   border-color: #818cf8;
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
   background: #ffffff;
+}
+
+/* ── Landing page specific styles ── */
+.lp-body {
+  font-family: 'Hanken Grotesk', sans-serif;
+  background-color: var(--color-lp-surface);
+  color: var(--color-lp-on-surface);
+}
+
+.lp-headline {
+  font-family: 'Manrope', sans-serif;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
 }
