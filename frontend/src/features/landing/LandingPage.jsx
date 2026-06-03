@@ -7,8 +7,8 @@ import { feedbackAPI } from '../auth/services/services';
 
 /* ── Design tokens ── */
 const C = {
-  surface: '#fbf9f4',
-  surfaceContainer: '#f0eee9',
+  surface: '#f9f5eaff',
+  surfaceContainer: '#d9d7d1ff',
   surfaceContainerLow: '#f5f3ee',
   surfaceContainerHigh: '#eae8e3',
   surfaceVariant: '#e4e2dd',
@@ -182,25 +182,16 @@ function HeroSection() {
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', position: 'relative', zIndex: 1 }}>
         <div className="flex flex-col md:flex-row items-center" style={{ minHeight: '85vh', paddingTop: 80, paddingBottom: 60, gap: 48 }}>
           {/* Dog image — left */}
-          <div className="flex-1 order-2 md:order-1" style={{ display: 'flex', justifyContent: 'center' }}>
+          <div className="flex-1 order-2 md:order-1" style={{ display: 'flex', justifyContent: 'center', flex: 1.5 }}>
             <img
               alt="PawLens Mascot — Dug"
               src="/Dug-nobg.png"
-              style={{ width: '100%', maxWidth: 480, height: 'auto' }}
+              style={{ width: '100%', height: 'auto' }}
             />
           </div>
 
           {/* Text — right */}
           <div className="flex-1 order-1 md:order-2" style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-            <Reveal>
-              <div style={{
-                display: 'inline-flex', alignItems: 'center', gap: 8, padding: '6px 16px', borderRadius: 100,
-                background: `${C.tertiaryContainer}33`, border: `1px solid ${C.tertiary}33`,
-              }}>
-                <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', display: 'inline-block' }} />
-                <span style={{ fontSize: 12, fontWeight: 600, color: C.tertiary, letterSpacing: '0.05em', textTransform: 'uppercase' }}>Powered by Vision Transformer AI</span>
-              </div>
-            </Reveal>
 
             <Reveal delay={0.06}>
               <h1 style={{
@@ -307,23 +298,16 @@ function Features() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 20 }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" style={{ gap: 32 }}>
           {features.map((f, i) => (
             <Reveal key={f.title} delay={i * 0.05}>
-              <motion.div
-                whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(39,19,16,0.06)', borderColor: C.outlineVariant }}
-                transition={{ duration: 0.25 }}
-                style={{
-                  background: C.surface, border: `1px solid ${C.outlineVariant}40`, borderRadius: 16,
-                  padding: 28, transition: 'all 0.25s',
-                }}
-              >
-                <div style={{ width: 44, height: 44, borderRadius: 12, background: f.bg, display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+                <div style={{ width: 44, height: 44, borderRadius: 12, background: f.bg, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Icon name={f.icon} size={22} style={{ color: f.ic }} />
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 600, color: C.primary, marginBottom: 8 }}>{f.title}</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 600, color: C.primary }}>{f.title}</h3>
                 <p style={{ fontSize: 14, color: C.onSurfaceVariant, lineHeight: 1.6 }}>{f.description}</p>
-              </motion.div>
+              </div>
             </Reveal>
           ))}
         </div>
