@@ -1,16 +1,13 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router';
 import { useAuth } from '../../../context/AuthContext';
+import { useTheme } from '../../../context/ThemeContext';
+import { getColors } from '../../../theme/colors';
 import { Mail, Lock, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
-const C = {
-  surface: '#fbf9f4', surfaceContainerLow: '#f5f3ee', surfaceContainer: '#f0eee9',
-  onSurface: '#1b1c19', onSurfaceVariant: '#504442', outlineVariant: '#d3c3c0',
-  primary: '#271310', onPrimary: '#ffffff', primaryContainer: '#3e2723',
-  primaryFixedDim: '#e3beb8', secondary: '#895200', secondaryFixed: '#ffdcbc',
-};
-
 export default function RegisterPage() {
+  const { isDark } = useTheme();
+  const C = useMemo(() => getColors(isDark), [isDark]);
   const [formData, setFormData] = useState({ username: '', email: '', password: '' });
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');

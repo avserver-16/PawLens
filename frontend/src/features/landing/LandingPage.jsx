@@ -1,31 +1,17 @@
 import { Link } from 'react-router';
 import { useAuth } from '../../context/AuthContext';
-import { useState, useEffect } from 'react';
+import { useTheme } from '../../context/ThemeContext';
+import { getColors } from '../../theme/colors';
+import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence, useScroll } from 'framer-motion';
-import { Menu, X, Star, Send, Loader2 } from 'lucide-react';
+import { Menu, X, Star, Send, Loader2, Sun, Moon } from 'lucide-react';
 import { feedbackAPI } from '../auth/services/services';
 
-/* ── Design tokens ── */
-const C = {
-  surface: '#f9f5eaff',
-  surfaceContainer: '#d9d7d1ff',
-  surfaceContainerLow: '#f5f3ee', 
-  surfaceContainerHigh: '#eae8e3',
-  surfaceVariant: '#e4e2dd',
-  onSurface: '#1b1c19',
-  onSurfaceVariant: '#504442',
-  primary: '#271310',
-  onPrimary: '#ffffff',
-  primaryContainer: '#3e2723',
-  primaryFixedDim: '#e3beb8',
-  secondary: '#895200',
-  onSecondary: '#ffffff',
-  secondaryContainer: '#feb158',
-  secondaryFixed: '#ffdcbc',
-  tertiary: '#765b00',
-  tertiaryContainer: '#c9a74d',
-  outlineVariant: '#d3c3c0',
-};
+/* ── Theme-aware colors hook ── */
+function useColors() {
+  const { isDark } = useTheme();
+  return useMemo(() => getColors(isDark), [isDark]);
+}
 
 /* ── Material Symbol icon ── */
 function Icon({ name, fill, size = 24, style = {} }) {
@@ -64,7 +50,9 @@ function Reveal({ children, delay = 0 }) {
    NAVBAR
    ═══════════════════════════════════════════════ */
 function Navbar() {
+  const C = useColors();
   const { user } = useAuth();
+  const { isDark, toggle } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
@@ -114,6 +102,9 @@ function Navbar() {
         </div>
 
         <div className="hidden md:flex" style={{ alignItems: 'center', gap: 12 }}>
+          <button onClick={toggle} style={{ background: 'none', border: `1px solid ${C.outlineVariant}40`, borderRadius: 10, padding: 8, cursor: 'pointer', color: C.onSurfaceVariant, display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }} title={isDark ? 'Switch to light mode' : 'Switch to dark mode'}>
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           {user ? (
             <Link to="/dashboard" style={{
               background: C.primary, color: C.onPrimary, padding: '10px 20px', borderRadius: 12,
@@ -151,6 +142,10 @@ function Navbar() {
                   {link.label}
                 </a>
               ))}
+              <button onClick={toggle} style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: '10px 0', fontSize: 14, fontWeight: 500, color: C.onSurfaceVariant, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}>
+                {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                {isDark ? 'Light Mode' : 'Dark Mode'}
+              </button>
               <div style={{ paddingTop: 12, borderTop: `1px solid ${C.outlineVariant}30`, marginTop: 4 }}>
                 {user ? (
                   <Link to="/dashboard" style={{ display: 'block', textAlign: 'center', background: C.primary, color: C.onPrimary, padding: 12, borderRadius: 12, fontWeight: 600, fontSize: 14, textDecoration: 'none' }}>Dashboard</Link>
@@ -173,6 +168,7 @@ function Navbar() {
    HERO SECTION
    ═══════════════════════════════════════════════ */
 function HeroSection() {
+  const C = useColors();
   return (
     <section style={{ background: C.surface, position: 'relative', overflow: 'hidden' }}>
       {/* Subtle background blurs */}
@@ -251,6 +247,7 @@ function HeroSection() {
    STATS BAND
    ═══════════════════════════════════════════════ */
 function StatsBand() {
+  const C = useColors();
   const stats = [
     { value: '91%+', label: 'Accuracy Rate' },
     { value: '6', label: 'Diseases Detected' },
@@ -277,16 +274,17 @@ function StatsBand() {
 /* ═══════════════════════════════════════════════
    FEATURES — 6 CARDS
    ═══════════════════════════════════════════════ */
-const features = [
-  { icon: 'biotech', title: 'AI-Powered Diagnosis', description: 'Advanced Vision Transformer model trained on 4,200+ canine skin disease images for accurate identification.', bg: `${C.secondaryFixed}40`, ic: C.secondary },
-  { icon: 'bolt', title: 'Instant Results', description: 'Get disease predictions and detailed analysis in seconds. Upload a photo and let our AI do the rest.', bg: `${C.secondaryContainer}30`, ic: C.tertiary },
-  { icon: 'favorite', title: 'Treatment Guidance', description: 'Comprehensive treatment recommendations, symptom details, and severity assessments for each diagnosis.', bg: `${C.primaryFixedDim}40`, ic: '#b45050' },
-  { icon: 'bar_chart', title: 'Track Health History', description: "Keep a complete record of all diagnoses. Monitor your pet's skin health over time with detailed analytics.", bg: '#e8f5e940', ic: '#2e7d32' },
-  { icon: 'shield', title: 'Secure & Private', description: "Your pet's data is encrypted and protected. We follow industry-standard security practices.", bg: `${C.surfaceVariant}80`, ic: C.primary },
-  { icon: 'schedule', title: '24/7 Availability', description: 'Access PawLens anytime, anywhere. No appointments needed — get instant peace of mind.', bg: '#e3f2fd50', ic: '#1565c0' },
-];
 
 function Features() {
+  const C = useColors();
+  const features = [
+    { icon: 'biotech', title: 'AI-Powered Diagnosis', description: 'Advanced Vision Transformer model trained on 4,200+ canine skin disease images for accurate identification.', bg: `${C.secondaryFixed}40`, ic: C.secondary },
+    { icon: 'bolt', title: 'Instant Results', description: 'Get disease predictions and detailed analysis in seconds. Upload a photo and let our AI do the rest.', bg: `${C.secondaryContainer}30`, ic: C.tertiary },
+    { icon: 'favorite', title: 'Treatment Guidance', description: 'Comprehensive treatment recommendations, symptom details, and severity assessments for each diagnosis.', bg: `${C.primaryFixedDim}40`, ic: '#b45050' },
+    { icon: 'bar_chart', title: 'Track Health History', description: "Keep a complete record of all diagnoses. Monitor your pet's skin health over time with detailed analytics.", bg: '#e8f5e940', ic: '#2e7d32' },
+    { icon: 'shield', title: 'Secure & Private', description: "Your pet's data is encrypted and protected. We follow industry-standard security practices.", bg: `${C.surfaceVariant}80`, ic: C.primary },
+    { icon: 'schedule', title: '24/7 Availability', description: 'Access PawLens anytime, anywhere. No appointments needed — get instant peace of mind.', bg: '#e3f2fd50', ic: '#1565c0' },
+  ];
   return (
     <section id="features" style={{ background: C.surfaceContainerLow, padding: '80px 0' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
@@ -327,6 +325,7 @@ const steps = [
 ];
 
 function HowItWorks() {
+  const C = useColors();
   return (
     <section id="how-it-works" style={{ background: C.surface, padding: '80px 0' }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px' }}>
@@ -371,6 +370,7 @@ const hardcodedTestimonials = [
 ];
 
 function TestimonialCard({ name, role, text, rating }) {
+  const C = useColors();
   return (
     <motion.div
       whileHover={{ y: -4, boxShadow: '0 8px 24px rgba(39,19,16,0.06)' }}
@@ -408,6 +408,7 @@ function TestimonialCard({ name, role, text, rating }) {
 }
 
 function LiveTestimonials() {
+  const C = useColors();
   const [feedbacks, setFeedbacks] = useState([]);
 
   const loadFeedbacks = async () => {
@@ -445,6 +446,7 @@ function LiveTestimonials() {
 }
 
 function Testimonials({ refreshKey }) {
+  const C = useColors();
   return (
     <>
       <section id="testimonials" style={{ padding: '80px 0', background: C.surfaceContainerLow }}>
@@ -474,6 +476,7 @@ function Testimonials({ refreshKey }) {
    FEEDBACK FORM
    ═══════════════════════════════════════════════ */
 function FeedbackForm({ onSubmitted }) {
+  const C = useColors();
   const [name, setName] = useState('');
   const [role, setRole] = useState('');
   const [message, setMessage] = useState('');
@@ -580,6 +583,7 @@ function FeedbackForm({ onSubmitted }) {
 }
 
 function FeedbackSection({ onSubmitted }) {
+  const C = useColors();
   return (
     <section style={{ padding: '80px 0', background: C.surface }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -602,6 +606,7 @@ function FeedbackSection({ onSubmitted }) {
    CTA SECTION
    ═══════════════════════════════════════════════ */
 function CTASection() {
+  const C = useColors();
   return (
     <section style={{ padding: '80px 0', background: C.surfaceContainerLow }}>
       <div style={{ maxWidth: 800, margin: '0 auto', padding: '0 24px' }}>
@@ -636,6 +641,7 @@ function CTASection() {
    FOOTER
    ═══════════════════════════════════════════════ */
 function Footer() {
+  const C = useColors();
   return (
     <footer style={{ padding: '24px 0', borderTop: `1px solid ${C.outlineVariant}30`, background: C.surfaceContainerHigh }}>
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '0 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
@@ -662,6 +668,7 @@ function Footer() {
    LANDING PAGE — ROOT
    ═══════════════════════════════════════════════ */
 export default function LandingPage() {
+  const C = useColors();
   const [refreshKey, setRefreshKey] = useState(0);
 
   return (
